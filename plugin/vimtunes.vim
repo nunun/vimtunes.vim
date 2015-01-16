@@ -1168,12 +1168,14 @@ function! vimtunes.quickfix(...) dict
 	nmap <silent> <Tab> <Esc>:call vimtunes.qf_toggle()<CR>
 endfunction
 function! vimtunes.quickfix_map() dict
-	nmap <buffer> <silent> <expr> <C-n> vimtunes.qf_next()
-	nmap <buffer> <silent> <expr> <C-p> vimtunes.qf_prev()
+	" TODO fix this later
+	nmap <silent> <expr> <C-n> vimtunes.qf_next()
+	nmap <silent> <expr> <C-p> vimtunes.qf_prev()
 endfunction
 function! vimtunes.quickfix_unmap() dict
-	nunmap <buffer> <C-n>
-	nunmap <buffer> <C-p>
+	" TODO fix this later
+	nunmap <C-n>
+	nmap <silent> <C-p> :call CtrlPCall()<CR>
 endfunction
 
 "quickfix functions
