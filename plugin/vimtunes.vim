@@ -1166,20 +1166,14 @@ function! vimtunes.quickfix(...) dict
 	let self.qf_use.quick_resume = 1
 	" keymap
 	nmap <silent> <Tab> <Esc>:call vimtunes.qf_toggle()<CR>
-	" keyhook
-	call s:keyhook_add(
-	    \ "3_quickfix", "CnCp",
-	    \ "s:qf_keyhook_active",
-	    \ "s:qf_keyhook_inactive")
 endfunction
-
-function! s:qf_keyhook_active()
-	nmap <silent> <expr> <C-n> vimtunes.qf_next()
-	nmap <silent> <expr> <C-p> vimtunes.qf_prev()
+function! vimtunes.quickfix_map() dict
+	nmap <buffer> <silent> <expr> <C-n> vimtunes.qf_next()
+	nmap <buffer> <silent> <expr> <C-p> vimtunes.qf_prev()
 endfunction
-function! s:qf_keyhook_inactive()
-	nunmap <C-n>
-	nunmap <C-p>
+function! vimtunes.quickfix_unmap() dict
+	nunmap <buffer> <C-n>
+	nunmap <buffer> <C-p>
 endfunction
 
 "quickfix functions
@@ -1225,7 +1219,7 @@ function! vimtunes.qf_open()
 		exec ":cc"
 	endif
 	redraw | echo "[TAB] close quickfix"
-	call s:keyhook_active("3_quickfix")
+	call self.quickfix_map()
 endfunction
 function! vimtunes.qf_close()
 	if self.qf_exists()
@@ -1233,7 +1227,7 @@ function! vimtunes.qf_close()
 		call self.qf_mark(1)
 	endif
 	redraw | echo "quickfix closed."
-	call s:keyhook_inactive("3_quickfix")
+	call self.quickfix_unmap()
 endfunction
 function! vimtunes.qf_toggle()
 	return (self.qf_exists())? self.qf_close() : self.qf_open()
