@@ -1485,7 +1485,33 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.vimgrep(...) dict
 	" keymaps
-	map ? :vimgrep /<c-r>=expand("<cword>")<cr>/ ./**/*
+	"map ? :VimGrep ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
+	map ? :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
+
+	" VimGrep
+	command! -nargs=* -complete=file VimGrep
+	    \ :call vimtunes.VimGrepCommand(<f-args>)
+endfunction
+
+function! vimtunes.VimGrepCommand(...) dict
+	let mesg = "VimGrep: File: "
+	let file = (!exists("a:1"))? inputdialog(mesg, "**/*", "") : a:1
+	if file == ""
+		echo "VimGrep: cancelled."
+		return
+	endif
+
+	let mesg = "VimGrep: Pattern: "
+	let pattern = (!exists("a:2"))? inputdialog(mesg, "", "") : a:2
+	if pattern == ""
+		echo "VimGrep: cancelled."
+		return
+	endif
+
+	" reopen vimgrep result.
+	let cmd = ":vimgrep ". pattern. " ". file
+	echo cmd. " (cwd=\"". getcwd(). "\")"
+	exec cmd
 endfunction
 
 "-----------------------------------------------------------------------------
