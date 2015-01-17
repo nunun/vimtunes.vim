@@ -1,6 +1,15 @@
 "#############################################################################
 "###                               VIMTUNES                                ###
 "#############################################################################
+if exists('g:loaded_vimtunes')
+  finish
+elseif v:version < 703
+  echoerr 'vimtunes.vim does not work on Vim "' . v:version . '".'
+  finish
+endif
+
+let s:save_cpo = &cpo
+set cpo&vim
 
 "=============================================================================
 " VimTunes (Configuration)
@@ -71,15 +80,41 @@ endfunction
 " vim
 "-----------------------------------------------------------------------------
 function! vimtunes.vim(...) dict
-	" jumplist (<C-o>,<C-p>)
-	"noremap <C-p> <C-i>
-	" insert mode mappings
-	imap <C-f> <right>
-	imap <C-b> <left>
-	imap <C-a> <Home>
-	imap <C-e> <End>
-	"imap <C-h> <Del>
-	imap <C-c> <Esc>
+	set tabstop=8
+	set shiftwidth=8
+	"set ignorecase
+	set smartcase
+	set nonumber
+	set autowrite
+	set scrolloff=10
+	set showmatch
+	set nobackup
+	set history=50
+	set list
+	set listchars=eol:\ ,tab:\.\ ,extends:<,trail:\_
+	set laststatus=0
+	"set laststatus=2
+	set directory=/tmp,c:\windows\temp,c:\temp,c:\tmp
+	set hlsearch
+	set nowrap
+	"set wrap
+	"set mouse=a
+	set ruler
+	set showmode
+	"set showcmd
+	"set noerrorbells
+	set incsearch
+	set noswapfile
+	set novisualbell
+	set t_vb=
+	if has('win32') "win32/win64
+		set noundofile
+	elseif has('persistent_undo')
+		set undofile
+		set undodir=/tmp
+	endif
+	"set verbose=9
+	filetype plugin on
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -185,6 +220,16 @@ endfunction
 " inputmap
 "-----------------------------------------------------------------------------
 function! vimtunes.inputmap(...) dict
+	" jumplist (<C-o>,<C-p>)
+	"noremap <C-p> <C-i>
+	" insert mode mappings
+	imap <C-f> <right>
+	imap <C-b> <left>
+	imap <C-a> <Home>
+	imap <C-e> <End>
+	"imap <C-h> <Del>
+	imap <C-c> <Esc>
+
 	imap <C-^>b     <S-Left>
 	imap <C-^><C-b> <S-Left>
 	imap <C-^>f     <S-Right>
@@ -2030,6 +2075,9 @@ call vimtunes.tune("use0", use0)
 call vimtunes.tune("use1", use1)
 call vimtunes.tune("use2", use2)
 
+let g:loaded_vimtunes = 1
+let &cpo = s:save_cpo
+unlet s:save_cpo
 "{{{ BACKUP
 "let use9 = {} "priority 9 (low)
 "call vimtunes.tune("use9", use9)
