@@ -1125,19 +1125,10 @@ function! vimtunes.quickfix(...) dict
 	let self.qf_use.quick_resume = 1
 	" keymap
 	nmap <silent> <Tab> <Esc>:call vimtunes.qf_toggle()<CR>
-endfunction
 
-" TODO
-" keyhook
-function! vimtunes.quickfix_map() dict
-	" TODO fix this later
-	nmap <silent> <expr> <C-n> vimtunes.qf_next()
-	nmap <silent> <expr> <C-p> vimtunes.qf_prev()
-endfunction
-function! vimtunes.quickfix_unmap() dict
-	" TODO fix this later
-	nunmap <C-n>
-	nmap <silent> <C-p> :call CtrlPCall()<CR>
+	" keyhooks
+	call vimtunes#keyhook#nhook("qf", "<C-n>", "vimtunes.qf_next()", "<silent> <expr>")
+	call vimtunes#keyhook#nhook("qf", "<C-p>", "vimtunes.qf_prev()", "<silent> <expr>")
 endfunction
 
 "quickfix functions
@@ -1183,7 +1174,7 @@ function! vimtunes.qf_open()
 		exec ":cc"
 	endif
 	redraw | echo "[TAB] close quickfix"
-	call self.quickfix_map()
+	call vimtunes#keyhook#activate("qf")
 endfunction
 function! vimtunes.qf_close()
 	if self.qf_exists()
@@ -1191,7 +1182,7 @@ function! vimtunes.qf_close()
 		call self.qf_mark(1)
 	endif
 	redraw | echo "quickfix closed."
-	call self.quickfix_unmap()
+	call vimtunes#keyhook#deactivate("qf")
 endfunction
 function! vimtunes.qf_toggle()
 	return (self.qf_exists())? self.qf_close() : self.qf_open()
@@ -1561,12 +1552,12 @@ function! vimtunes.tabline(...) dict
 	" keymap
 	nmap <silent> .     <Esc>:tabnext<CR>
 	nmap <silent> ,     <Esc>:tabprev<CR>
-	nmap <silent> <C-n> <Esc>:tab split<CR>
+	"nmap <silent> <C-n> <Esc>:tab split<CR>
 	vmap <silent> <C-n> y<Esc>:tab split<CR>:e `=tempname()`<CR>
 	    \p<ESC>Gdd:w<CR>
 
-	" TODO
-	" keyhook
+	" keyhooks
+	call vimtunes#keyhook#nmap("<C-n>", "<ESC>:tab split<CR>")
 endfunction
 
 function! vimtunes.build_tabline() dict
@@ -2359,4 +2350,16 @@ call vimtunes.tune("use2", use2)
 "	endif
 "endfunction
 "let use2["autoreopen"]	= (1)
+" TODO
+" keyhook
+"function! vimtunes.quickfix_map() dict
+"	" TODO fix this later
+"	nmap <silent> <expr> <C-n> vimtunes.qf_next()
+"	nmap <silent> <expr> <C-p> vimtunes.qf_prev()
+"endfunction
+"function! vimtunes.quickfix_unmap() dict
+"	" TODO fix this later
+"	nunmap <C-n>
+"	nmap <silent> <C-p> :call CtrlPCall()<CR>
+"endfunction
 "}}}
