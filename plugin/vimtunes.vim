@@ -7,8 +7,7 @@
 "=============================================================================
 let use0 = {} "priority 0 (hi)
 let use1 = {} "priority 1
-let use2 = {} "priority 2
-let use9 = {} "priority 9 (low)
+let use2 = {} "priority 2 (low)
 
 " setup
 let use0["vim"]		= (1)
@@ -43,51 +42,11 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["Cfile"]	= (1)
-let use2["autoreopen"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
 let use2["rulerline"]	= (1) && has("statusline")
 let use2["tabline"]	= (1) && has("windows") "[,][.]
 let use2["guitablabel"]	= (1) && has("windows") && has("gui_running")
-" afterwork
-let use9["registry"]	= (1)
-
-"=============================================================================
-" VimPlatform
-"=============================================================================
-" Setup $VIM_PLATFORM, the platform name what Vim running on.
-if has("win64")
-	" NOTE: has("win64") also has("win32")
-	let $VIM_PLATFORM = "win64".   (has("gui")? "_gui" : "")
-elseif has("win32")
-	let $VIM_PLATFORM = "win".     (has("gui")? "_gui" : "")
-elseif has("win32unix")
-	let $VIM_PLATFORM = "cygwin".  (has("gui")? "_gui" : "")
-elseif has("mac")
-	let $VIM_PLATFORM = "mac".     (has("gui")? "_gui" : "")
-elseif has("unix")
-	let $VIM_PLATFORM = "unix".    (has("gui")? "_gui" : "")
-else
-	let $VIM_PLATFORM = "unknown". (has("gui")? "_gui" : "")
-endif
-
-" platform specific
-if $VIM_PLATFORM ==# "win" || $VIM_PLATFORM ==# "win64"
-	if has('persistent_undo')
-		set noundofile
-	endif
-endif
-
-"=============================================================================
-" VimHostname
-"=============================================================================
-" Setup $HOSTNAME, the hostname name what Vim running on.
-let $HOSTNAME = hostname()
-
-" hostname specific
-"if $HOSTNAME ==# "DOSHITA-PC"
-"else
-"endif
 
 "#############################################################################
 "###                            START TUNES                                ###
@@ -113,7 +72,7 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.vim(...) dict
 	" jumplist (<C-o>,<C-p>)
-	noremap <C-p> <C-i>
+	"noremap <C-p> <C-i>
 	" insert mode mappings
 	imap <C-f> <right>
 	imap <C-b> <left>
@@ -1167,6 +1126,9 @@ function! vimtunes.quickfix(...) dict
 	" keymap
 	nmap <silent> <Tab> <Esc>:call vimtunes.qf_toggle()<CR>
 endfunction
+
+" TODO
+" keyhook
 function! vimtunes.quickfix_map() dict
 	" TODO fix this later
 	nmap <silent> <expr> <C-n> vimtunes.qf_next()
@@ -1526,54 +1488,6 @@ function! vimtunes.CfileCommand(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" autoreopen
-"-----------------------------------------------------------------------------
-function! vimtunes.autoreopen(...) dict
-	autocmd FileType * :call vimtunes.ReopenCurrentBufferByAssociatedApplication()
-endfunction
-
-function! vimtunes.ReopenCurrentBufferByAssociatedApplication() dict
-	if self.OpenCurrentBufferByAssociatedApplication() != 0
-		q! " close if open succeeded.
-	endif
-endfunction
-
-function! vimtunes.OpenCurrentBufferByAssociatedApplication() dict
-	let file = expand("%:p")
-	let ext  = fnamemodify(file, ":e")
-	if ext == "sln"
-		return self.OpenMonoDevelop(file)
-	endif
-	return 0
-endfunction
-
-function! vimtunes.OpenMonoDevelop(slnFile) dict
-	if has("win32") "windows
-		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop.exe) for edit .sln on Windows", "")
-	elseif has("win32unix") "cygwin
-		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop.exe) for edit .sln on cygwin", "")
-	elseif has("mac") "mac
-		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop) for edit .sln on mac", "")
-	elseif has("unix") "unix
-		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop) for edit .sln on unix", "")
-	endif
-	if self.registry_check("MonoDevelop")
-		let monoDevelop = self.registry_request("MonoDevelop", "For edit .sln", "")
-		call self.OpenCommand("\"". monoDevelop. "\" \"". a:slnFile. "\"")
-		return 1
-	endif
-	return 0
-endfunction
-
-function! vimtunes.OpenCommand(cmd)
-	if isdirectory(g:neobundle_dir) && neobundle#is_installed('vim-dispatch')
-		exec "Start ". a:cmd
-	else
-		call system(a:cmd)
-	endif
-endfunction
-
-"-----------------------------------------------------------------------------
 " statusline
 "-----------------------------------------------------------------------------
 let vimtunes.statusline_disable_custom_design = 0
@@ -1647,24 +1561,12 @@ function! vimtunes.tabline(...) dict
 	" keymap
 	nmap <silent> .     <Esc>:tabnext<CR>
 	nmap <silent> ,     <Esc>:tabprev<CR>
-	"nmap <silent> <C-n> <Esc>:tab split<CR>
+	nmap <silent> <C-n> <Esc>:tab split<CR>
 	vmap <silent> <C-n> y<Esc>:tab split<CR>:e `=tempname()`<CR>
 	    \p<ESC>Gdd:w<CR>
-	" keyhook
-	call s:keyhook_add(
-	    \ "9_tabline", "CnCp",
-	    \ "s:tabline_keyhook_active",
-	    \ "s:tabline_keyhook_inactive")
-	call s:keyhook_active("9_tabline")
-endfunction
 
-function! s:tabline_keyhook_active()
-	nmap <silent> <C-n> <Esc>:tab split<CR>
-	noremap <C-p> <C-i>
-endfunction
-function! s:tabline_keyhook_inactive()
-	nunmap <C-n>
-	nunmap <C-p>
+	" TODO
+	" keyhook
 endfunction
 
 function! vimtunes.build_tabline() dict
@@ -1775,18 +1677,6 @@ function! vimtunes.build_guitablabel()
 	return label
 endfunction
 
-"-----------------------------------------------------------------------------
-" registry
-"-----------------------------------------------------------------------------
-function! vimtunes.registry(...) dict
-	if expand("%:p") == $HOME. "/.vimrc"
-		nmap <buffer> <Tab> :call vimtunes.registry_toggle()<CR>
-		autocmd VimEnter *
-			\ redraw
-			\ | echo "[TAB] to toggle window for Registry File."
-	endif
-endfunction
-
 "#############################################################################
 "###                            LOCAL FUNCTION                             ###
 "#############################################################################
@@ -1878,274 +1768,6 @@ function! vimtunes.git(url, dir, branch) dict
 	echo system("git pull -u origin ". a:branch)
 	echo system("git checkout -b ". a:branch)
 	exec "cd -"
-endfunction
-
-"#############################################################################
-"###                          REGISTRY FUNCTION                            ###
-"#############################################################################
-let g:vimrc_registry = $HOME. "/.vimrc.registry.". $VIM_PLATFORM "<-Attention!
-let g:registry_is_vim_entered = 0
-let g:registry_is_loaded      = 0
-let g:registry = {}
-
-" hook and mark when vim entered
-autocmd VimEnter * :let g:registry_is_vim_entered = 1
-
-" check registry key existence
-function! vimtunes.registry_contains(key)
-	return exists("g:registry[a:key]")
-endfunction
-
-" check registry value existence for key
-function! vimtunes.registry_check(key)
-	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
-	if path == "!" || path == ""
-		return 0
-	endif
-	return 1
-endfunction
-
-" get registry value for key
-" function! vimtunes.registry_get(key)
-" 	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
-" 	if path == "!" || path == ""
-" 		return ""
-" 	endif
-" 	return path
-" endfunction
-
-" request registry value for key.
-function! vimtunes.registry_request(key, desc, defval) dict
-	call self.registry_load()
-	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
-	if path == "!"
-		return ""
-	endif
-	if path == "" || !(executable(path) || isdirectory(path))
-		if g:registry_is_vim_entered == 1
-			call self.registry_input(
-			 \ a:key,
-			 \ a:desc,
-			 \ a:defval)
-		else
-			exec "autocmd VimEnter * "
-			 \ . " :call vimtunes.registry_input("
-			 \ . "\"". a:key.    "\","
-			 \ . "\"". a:desc.   "\","
-			 \ . "\"". a:defval. "\")"
-		endif
-		return ""
-	endif
-	return path
-endfunction
-
-" show help message
-function! vimtunes.registry_confirm_once(key, desc) dict
-	call self.registry_load()
-	if !self.registry_contains(a:key)
-		if g:registry_is_vim_entered == 1
-			call self.registry_confirm_once_common(
-			 \ a:key,
-			 \ a:desc)
-			return
-		else
-			exec "autocmd VimEnter * "
-			 \ . " call vimtunes.registry_confirm_once_common("
-			 \ . "\"". a:key.  "\", "
-			 \ . "\"". a:desc. "\")"
-		endif
-	endif
-endfunction
-function! vimtunes.registry_confirm_once_common(key, desc) dict
-	if confirm(a:desc, "OK\nRemind this again") == 1
-		call self.registry_set(a:key, "!")
-	endif
-endfunction
-
-" request $PATH env
-function! vimtunes.registry_request_setpath(key, desc, defval) dict
-	let path = self.registry_request(a:key, a:desc, a:defval)
-	if path == ""
-		return ""
-	endif
-	" TODO: change order if value already exists
-	if executable(path)
-		let path = fnamemodify(path, ":h")
-	endif
-	if has("win32")
-		let $PATH .= ";". path
-	else
-		let $PATH .= ":". path
-	endif
-endfunction
-
-" request filename
-function! vimtunes.registry_request_filename(key, desc, defval) dict
-	let path = self.registry_request(a:key, a:desc, a:defval)
-	if path == ""
-		return ""
-	endif
-	return fnamemodify(path, ":t")
-endfunction
-
-" input registry key
-function! vimtunes.registry_input(key, desc, defval) dict
-	let regval  = exists("g:registry[a:key]")? g:registry[a:key] : ""
-	let text    = (regval == "")? a:defval : regval
-	let prompt  = "Enter Path '". a:key. "'"
-	let prompt .= (a:desc != "")? " (". a:desc. ")" : ""
-	let prompt .= " ['!' to stop asking]: "
-	while 1
-		let path = inputdialog(prompt, text, -1)
-		if path == -1 || path == "" || path == "!"
-		 \ || (executable(path) || isdirectory(path))
-			let path = (path == -1)? "" : path
-			break
-		endif
-	endwhile
-	call self.registry_set(a:key, path)
-endfunction
-
-" set registry key
-function! vimtunes.registry_set(key, val) dict
-	if a:val != ""
-		let g:registry[a:key] = a:val
-		call self.registry_save((a:val == "!")? 0 : 1)
-	else
-		if exists("g:registry[a:key]")
-			call remove(g:registry, a:key)
-			call self.registry_save(0)
-		else
-			echom "Registry Setting for '". a:key. "' is cancelled."
-		endif
-	endif
-endfunction
-
-" load registry from file
-function! vimtunes.registry_load() dict
-	if g:registry_is_loaded == 0 && filereadable(g:vimrc_registry)
-		let g:registry_is_loaded = 1
-		exec "source ". g:vimrc_registry
-	endif
-endfunction
-
-" save registry to file
-function! vimtunes.registry_save(need_confirm) dict
-	let lines = []
-	for i in keys(g:registry)
-		let line  = "let g:registry['". i. "']"
-		let line .= " = '". g:registry[i]. "'"
-		call add(lines, line)
-	endfor
-	silent call writefile(lines, g:vimrc_registry)
-	if a:need_confirm
-		let mesg = "***** Registry updated! RESTARTING VIM is required! **** "
-		call confirm(mesg, "OK")
-	endif
-endfunction
-
-" open registry window (on vim)
-function! vimtunes.registry_open(focus) dict
-	if !filereadable(g:vimrc_registry)
-		return
-	endif
-	let nr = self.registry_tabbufnr(g:vimrc_registry)
-	if nr >= 0
-		if a:focus
-			exec nr. "wincmd w"
-		endif
-	else
-		let nr = bufnr("$")
-		botright split
-		resize 5
-		exec "silent edit ". g:vimrc_registry
-		nmap <buffer> <Tab> :call vimtunes.registry_toggle()<CR>
-		if !a:focus
-			exec nr. "wincmd w"
-		endif
-	endif
-endfunction
-
-" close registry window (on vim)
-function! vimtunes.registry_close() dict
-	let nr = self.registry_tabbufnr(g:vimrc_registry)
-	if nr >= 0
-		exec nr. "wincmd w"
-		exec "q!"
-	endif
-endfunction
-
-" toggle registry window (on vim)
-function! vimtunes.registry_toggle() dict
-	let nr = self.registry_tabbufnr(g:vimrc_registry)
-	let rf = g:vimrc_registry
-	if nr < 0
-		call self.registry_open(1)
-		redraw | echo "Window for Registry File '". rf. "' opened."
-	else
-		call self.registry_close()
-		redraw | echo "Window for Registry File '". rf. "' closed."
-	endif
-endfunction
-
-" registry_tabbufnr (utility function)
-function! vimtunes.registry_tabbufnr(n)
-	let buflist = tabpagebuflist()
-	for bufnr in buflist
-		let bufn = fnamemodify(bufname(bufnr), ":p")
-		if bufn == a:n
-			return bufnr
-		endif
-	endfor
-	return -1
-endfunction
-
-"#############################################################################
-"###                              KEYHOOKS                                 ###
-"#############################################################################
-let g:keyhooks = {}
-let g:activehooks = {}
-let g:curhook = ''
-
-function! s:keyhook_add(name, region, active_funcname, inactive_funcname)
-	let g:keyhooks[a:name] =
-	    \ [a:region, a:active_funcname, a:inactive_funcname]
-endfunction
-
-function! s:keyhook_active(name)
-	let hook   = g:keyhooks[a:name]
-	let region = hook[0]
-	if !exists("g:activehooks[region]")
-		let g:activehooks[region] = {}
-	endif
-	let g:activehooks[region][a:name] = 1
-	call s:keyhook_primary(g:activehooks[region])
-endfunction
-
-function! s:keyhook_inactive(name)
-	let hook   = g:keyhooks[a:name]
-	let region = hook[0]
-	unlet g:activehooks[region][a:name]
-	call s:keyhook_primary(g:activehooks[region])
-endfunction
-
-function! s:keyhook_primary(activehooks)
-	let keys = sort(keys(a:activehooks))
-	let primary = ''
-	if len(keys) > 0
-		let primary = keys[0]
-	endif
-	if primary != g:curhook
-		if g:curhook != ''
-			let funcname = g:keyhooks[g:curhook][2]
-			exec ":call ". funcname. "()"
-		endif
-		if primary != ''
-			let funcname = g:keyhooks[primary][1]
-			exec ":call ". funcname. "()"
-		endif
-		let g:curhook = primary
-	endif
 endfunction
 
 "#############################################################################
@@ -2416,5 +2038,325 @@ let HIGHLIGHT_GUI = {
 call vimtunes.tune("use0", use0)
 call vimtunes.tune("use1", use1)
 call vimtunes.tune("use2", use2)
-call vimtunes.tune("use9", use9)
 
+"{{{ BACKUP
+"let use9 = {} "priority 9 (low)
+"call vimtunes.tune("use9", use9)
+"" afterwork
+"let use9["registry"]	= (1)
+""=============================================================================
+"" VimPlatform
+""=============================================================================
+"" Setup $VIM_PLATFORM, the platform name what Vim running on.
+"if has("win64")
+"	" NOTE: has("win64") also has("win32")
+"	let $VIM_PLATFORM = "win64".   (has("gui")? "_gui" : "")
+"elseif has("win32")
+"	let $VIM_PLATFORM = "win".     (has("gui")? "_gui" : "")
+"elseif has("win32unix")
+"	let $VIM_PLATFORM = "cygwin".  (has("gui")? "_gui" : "")
+"elseif has("mac")
+"	let $VIM_PLATFORM = "mac".     (has("gui")? "_gui" : "")
+"elseif has("unix")
+"	let $VIM_PLATFORM = "unix".    (has("gui")? "_gui" : "")
+"else
+"	let $VIM_PLATFORM = "unknown". (has("gui")? "_gui" : "")
+"endif
+"
+"" platform specific
+"if $VIM_PLATFORM ==# "win" || $VIM_PLATFORM ==# "win64"
+"	if has('persistent_undo')
+"		set noundofile
+"	endif
+"endif
+"
+""=============================================================================
+"" VimHostname
+""=============================================================================
+"" Setup $HOSTNAME, the hostname name what Vim running on.
+"let $HOSTNAME = hostname()
+"
+" hostname specific
+"if $HOSTNAME ==# "DOSHITA-PC"
+"else
+"endif
+""-----------------------------------------------------------------------------
+"" registry
+""-----------------------------------------------------------------------------
+"function! vimtunes.registry(...) dict
+"	if expand("%:p") == $HOME. "/.vimrc"
+"		nmap <buffer> <Tab> :call vimtunes.registry_toggle()<CR>
+"		autocmd VimEnter *
+"			\ redraw
+"			\ | echo "[TAB] to toggle window for Registry File."
+"	endif
+"endfunction
+"
+""#############################################################################
+""###                          REGISTRY FUNCTION                            ###
+""#############################################################################
+"let g:vimrc_registry = $HOME. "/.vimrc.registry.". $VIM_PLATFORM "<-Attention!
+"let g:registry_is_vim_entered = 0
+"let g:registry_is_loaded      = 0
+"let g:registry = {}
+"
+"" hook and mark when vim entered
+"autocmd VimEnter * :let g:registry_is_vim_entered = 1
+"
+"" check registry key existence
+"function! vimtunes.registry_contains(key)
+"	return exists("g:registry[a:key]")
+"endfunction
+"
+"" check registry value existence for key
+"function! vimtunes.registry_check(key)
+"	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
+"	if path == "!" || path == ""
+"		return 0
+"	endif
+"	return 1
+"endfunction
+"
+"" get registry value for key
+"" function! vimtunes.registry_get(key)
+"" 	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
+"" 	if path == "!" || path == ""
+"" 		return ""
+"" 	endif
+"" 	return path
+"" endfunction
+"
+"" request registry value for key.
+"function! vimtunes.registry_request(key, desc, defval) dict
+"	call self.registry_load()
+"	let path = exists("g:registry[a:key]")? g:registry[a:key] : ""
+"	if path == "!"
+"		return ""
+"	endif
+"	if path == "" || !(executable(path) || isdirectory(path))
+"		if g:registry_is_vim_entered == 1
+"			call self.registry_input(
+"			 \ a:key,
+"			 \ a:desc,
+"			 \ a:defval)
+"		else
+"			exec "autocmd VimEnter * "
+"			 \ . " :call vimtunes.registry_input("
+"			 \ . "\"". a:key.    "\","
+"			 \ . "\"". a:desc.   "\","
+"			 \ . "\"". a:defval. "\")"
+"		endif
+"		return ""
+"	endif
+"	return path
+"endfunction
+"
+"" show help message
+"function! vimtunes.registry_confirm_once(key, desc) dict
+"	call self.registry_load()
+"	if !self.registry_contains(a:key)
+"		if g:registry_is_vim_entered == 1
+"			call self.registry_confirm_once_common(
+"			 \ a:key,
+"			 \ a:desc)
+"			return
+"		else
+"			exec "autocmd VimEnter * "
+"			 \ . " call vimtunes.registry_confirm_once_common("
+"			 \ . "\"". a:key.  "\", "
+"			 \ . "\"". a:desc. "\")"
+"		endif
+"	endif
+"endfunction
+"function! vimtunes.registry_confirm_once_common(key, desc) dict
+"	if confirm(a:desc, "OK\nRemind this again") == 1
+"		call self.registry_set(a:key, "!")
+"	endif
+"endfunction
+"
+"" request $PATH env
+"function! vimtunes.registry_request_setpath(key, desc, defval) dict
+"	let path = self.registry_request(a:key, a:desc, a:defval)
+"	if path == ""
+"		return ""
+"	endif
+"	" TODO: change order if value already exists
+"	if executable(path)
+"		let path = fnamemodify(path, ":h")
+"	endif
+"	if has("win32")
+"		let $PATH .= ";". path
+"	else
+"		let $PATH .= ":". path
+"	endif
+"endfunction
+"
+"" request filename
+"function! vimtunes.registry_request_filename(key, desc, defval) dict
+"	let path = self.registry_request(a:key, a:desc, a:defval)
+"	if path == ""
+"		return ""
+"	endif
+"	return fnamemodify(path, ":t")
+"endfunction
+"
+"" input registry key
+"function! vimtunes.registry_input(key, desc, defval) dict
+"	let regval  = exists("g:registry[a:key]")? g:registry[a:key] : ""
+"	let text    = (regval == "")? a:defval : regval
+"	let prompt  = "Enter Path '". a:key. "'"
+"	let prompt .= (a:desc != "")? " (". a:desc. ")" : ""
+"	let prompt .= " ['!' to stop asking]: "
+"	while 1
+"		let path = inputdialog(prompt, text, -1)
+"		if path == -1 || path == "" || path == "!"
+"		 \ || (executable(path) || isdirectory(path))
+"			let path = (path == -1)? "" : path
+"			break
+"		endif
+"	endwhile
+"	call self.registry_set(a:key, path)
+"endfunction
+"
+"" set registry key
+"function! vimtunes.registry_set(key, val) dict
+"	if a:val != ""
+"		let g:registry[a:key] = a:val
+"		call self.registry_save((a:val == "!")? 0 : 1)
+"	else
+"		if exists("g:registry[a:key]")
+"			call remove(g:registry, a:key)
+"			call self.registry_save(0)
+"		else
+"			echom "Registry Setting for '". a:key. "' is cancelled."
+"		endif
+"	endif
+"endfunction
+"
+"" load registry from file
+"function! vimtunes.registry_load() dict
+"	if g:registry_is_loaded == 0 && filereadable(g:vimrc_registry)
+"		let g:registry_is_loaded = 1
+"		exec "source ". g:vimrc_registry
+"	endif
+"endfunction
+"
+"" save registry to file
+"function! vimtunes.registry_save(need_confirm) dict
+"	let lines = []
+"	for i in keys(g:registry)
+"		let line  = "let g:registry['". i. "']"
+"		let line .= " = '". g:registry[i]. "'"
+"		call add(lines, line)
+"	endfor
+"	silent call writefile(lines, g:vimrc_registry)
+"	if a:need_confirm
+"		let mesg = "***** Registry updated! RESTARTING VIM is required! **** "
+"		call confirm(mesg, "OK")
+"	endif
+"endfunction
+"
+"" open registry window (on vim)
+"function! vimtunes.registry_open(focus) dict
+"	if !filereadable(g:vimrc_registry)
+"		return
+"	endif
+"	let nr = self.registry_tabbufnr(g:vimrc_registry)
+"	if nr >= 0
+"		if a:focus
+"			exec nr. "wincmd w"
+"		endif
+"	else
+"		let nr = bufnr("$")
+"		botright split
+"		resize 5
+"		exec "silent edit ". g:vimrc_registry
+"		nmap <buffer> <Tab> :call vimtunes.registry_toggle()<CR>
+"		if !a:focus
+"			exec nr. "wincmd w"
+"		endif
+"	endif
+"endfunction
+"
+"" close registry window (on vim)
+"function! vimtunes.registry_close() dict
+"	let nr = self.registry_tabbufnr(g:vimrc_registry)
+"	if nr >= 0
+"		exec nr. "wincmd w"
+"		exec "q!"
+"	endif
+"endfunction
+"
+"" toggle registry window (on vim)
+"function! vimtunes.registry_toggle() dict
+"	let nr = self.registry_tabbufnr(g:vimrc_registry)
+"	let rf = g:vimrc_registry
+"	if nr < 0
+"		call self.registry_open(1)
+"		redraw | echo "Window for Registry File '". rf. "' opened."
+"	else
+"		call self.registry_close()
+"		redraw | echo "Window for Registry File '". rf. "' closed."
+"	endif
+"endfunction
+"
+"" registry_tabbufnr (utility function)
+"function! vimtunes.registry_tabbufnr(n)
+"	let buflist = tabpagebuflist()
+"	for bufnr in buflist
+"		let bufn = fnamemodify(bufname(bufnr), ":p")
+"		if bufn == a:n
+"			return bufnr
+"		endif
+"	endfor
+"	return -1
+"endfunction
+""-----------------------------------------------------------------------------
+"" autoreopen
+""-----------------------------------------------------------------------------
+"function! vimtunes.autoreopen(...) dict
+"	autocmd FileType * :call vimtunes.ReopenCurrentBufferByAssociatedApplication()
+"endfunction
+"
+"function! vimtunes.ReopenCurrentBufferByAssociatedApplication() dict
+"	if self.OpenCurrentBufferByAssociatedApplication() != 0
+"		q! " close if open succeeded.
+"	endif
+"endfunction
+"
+"function! vimtunes.OpenCurrentBufferByAssociatedApplication() dict
+"	let file = expand("%:p")
+"	let ext  = fnamemodify(file, ":e")
+"	if ext == "sln"
+"		return self.OpenMonoDevelop(file)
+"	endif
+"	return 0
+"endfunction
+"
+"function! vimtunes.OpenMonoDevelop(slnFile) dict
+"	if has("win32") "windows
+"		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop.exe) for edit .sln on Windows", "")
+"	elseif has("win32unix") "cygwin
+"		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop.exe) for edit .sln on cygwin", "")
+"	elseif has("mac") "mac
+"		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop) for edit .sln on mac", "")
+"	elseif has("unix") "unix
+"		call self.registry_request_setpath("MonoDevelop", "Mono Develop (MonoDevelop) for edit .sln on unix", "")
+"	endif
+"	if self.registry_check("MonoDevelop")
+"		let monoDevelop = self.registry_request("MonoDevelop", "For edit .sln", "")
+"		call self.OpenCommand("\"". monoDevelop. "\" \"". a:slnFile. "\"")
+"		return 1
+"	endif
+"	return 0
+"endfunction
+"
+"function! vimtunes.OpenCommand(cmd)
+"	if isdirectory(g:neobundle_dir) && neobundle#is_installed('vim-dispatch')
+"		exec "Start ". a:cmd
+"	else
+"		call system(a:cmd)
+"	endif
+"endfunction
+"let use2["autoreopen"]	= (1)
+"}}}
