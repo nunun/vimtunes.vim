@@ -68,6 +68,19 @@ function! vimtunes#keyhook#deactivate(hookname)
 	endif
 endfunction
 
+" get default map
+function! vimtunes#keyhook#get_map(mapcmd, key)
+	return vimtunes#keyhook#get_hook('default', a:mapcmd, a:key)
+endfunction
+
+" get hook map
+function! vimtunes#keyhook#get_hook(hookname, mapcmd, key)
+	if exists('s:keyhooks[a:hookname][a:mapcmd][a:key]')
+		return s:keyhooks[a:hookname][a:mapcmd][a:key]
+	endif
+	return ""
+endfunction
+
 " add default map
 function! s:add_map(mapcmd, key, args)
 	call s:add_hook('default', a:mapcmd, a:key, a:args)
@@ -134,14 +147,18 @@ function! s:set(hookname, mapcmd, key)
 		let options = list[1]
 		" unmap current key
 		if curname != ""
-			exec s:unmapcmd[a:mapcmd]. ' '. a:key
+			let cmd = s:unmapcmd[a:mapcmd]. ' '. a:key
+			"echo cmd
+			exec cmd
 			if exists('s:curhooks[a:mapcmd][a:key]')
 				unlet s:curhooks[a:mapcmd][a:key]
 			endif
 		endif
 		" map next key
 		if expr != ''
-			exec a:mapcmd. ' '. options. ' '. a:key. ' '. expr
+			let cmd = a:mapcmd. ' '. options. ' '. a:key. ' '. expr
+			"echo cmd
+			exec cmd
 			let s:curhooks[a:mapcmd][a:key] = a:hookname
 		endif
 	endif
