@@ -1526,18 +1526,15 @@ endfunction
 "-----------------------------------------------------------------------------
 " statusline
 "-----------------------------------------------------------------------------
-let vimtunes.statusline_disable_custom_design = 0
 function! vimtunes.statusline(...) dict
-	if !self.statusline_disable_custom_design
-		set statusline=
-		    \%#StatusLineBar#
-		    \\ \|%*\ \ \ %{winnr()}\ \ \ %#StatusLineBar#\|
-		    \\ \%F
-		    \\ %{'[v]'.(vimtunes.build_view_formatencoding())}
-		    \\ %{'=>'}
-		    \%{'[e]'.(vimtunes.build_file_formatencoding())}
-		    \\ \%=%m\%*\ \ %c,\ %l/%L\ \(%P\)
-	endif
+	set statusline=
+	    \%#StatusLineBar#
+	    \\ \|%*\ \ \ %{winnr()}\ \ \ %#StatusLineBar#\|
+	    \\ \%F
+	    \\ %{'[v]'.(vimtunes.build_view_formatencoding())}
+	    \\ %{'=>'}
+	    \%{'[e]'.(vimtunes.build_file_formatencoding())}
+	    \\ \%=%m\%*\ \ %c,\ %l/%L\ \(%P\)
 endfunction
 
 function! vimtunes.build_file_formatencoding(...) dict
