@@ -1558,7 +1558,8 @@ function! vimtunes.VimFindCommand(...) dict
 		let &efm = old_efm
 	
 		" Open the quickfix window below the current window
-		botright copen
+		"botright copen
+		call self.qf_toggle()
 		call delete(tmpfile)
 	endif
 endfunction
