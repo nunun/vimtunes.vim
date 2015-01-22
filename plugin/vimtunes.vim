@@ -50,6 +50,7 @@ let use2["netrw"]	= (1)
 let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
+let use2["vimfind"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -1480,7 +1481,8 @@ endfunction
 function! vimtunes.vimgrep(...) dict
 	" keymaps
 	"map ? :VimGrep ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
-	map ? :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
+	"map s? ?
+	map s? :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
 
 	" VimGrep
 	command! -nargs=* -complete=file VimGrep
@@ -1488,13 +1490,12 @@ function! vimtunes.vimgrep(...) dict
 endfunction
 
 function! vimtunes.VimGrepCommand(...) dict
-	let mesg = "VimGrep: File: "
-	let file = (!exists("a:1"))? inputdialog(mesg, "**/*", "") : a:1
-	if file == ""
+	let mesg = "VimGrep: Path: "
+	let path = (!exists("a:1"))? inputdialog(mesg, "**/*", "") : a:1
+	if path == ""
 		echo "VimGrep: cancelled."
 		return
 	endif
-
 	let mesg = "VimGrep: Pattern: "
 	let pattern = (!exists("a:2"))? inputdialog(mesg, "", "") : a:2
 	if pattern == ""
@@ -1503,9 +1504,63 @@ function! vimtunes.VimGrepCommand(...) dict
 	endif
 
 	" reopen vimgrep result.
-	let cmd = ":vimgrep ". pattern. " ". file
+	let cmd = ":vimgrep ". pattern. " ". path
 	echo cmd. " (cwd=\"". getcwd(). "\")"
 	exec cmd
+endfunction
+
+"-----------------------------------------------------------------------------
+" vimfind
+"-----------------------------------------------------------------------------
+function! vimtunes.vimfind(...) dict
+	" keymaps
+	"map ? :VimFind ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
+	map s/ :VimFind . *<c-r>=expand("<cword>")<cr>*
+
+	" VimFind
+	command! -nargs=* -complete=file VimFind
+	    \ :call vimtunes.VimFindCommand(<f-args>)
+endfunction
+
+function! vimtunes.VimFindCommand(...) dict
+	let mesg = "VimFind: Path: "
+	let path = (!exists("a:1"))? inputdialog(mesg, ".", "") : a:1
+	if path == ""
+		echo "VimFind: cancelled."
+		return
+	endif
+	let mesg = "VimFind: Pattern: "
+	let pattern = (!exists("a:2"))? inputdialog(mesg, "", "") : a:2
+	if pattern == ""
+		echo "VimFind: cancelled."
+		return
+	endif
+
+	let l:list = system("find ". path. " -name '". pattern. "' | grep -v .svn ")
+	let l:num = strlen(substitute(l:list, "[^\n]", "", "g"))
+	if l:num < 1
+		echo "'". pattern. "' not found"
+		return
+	endif
+	if l:num != 1
+		let tmpfile = tempname()
+		exe "redir! > ". tmpfile
+		silent echon l:list
+		redir END
+		let old_efm = &efm
+		set efm=%f
+	
+		if exists(":cgetfile")
+			execute "silent! cgetfile ". tmpfile
+		else
+			execute "silent! cfile ". tmpfile
+		endif
+		let &efm = old_efm
+	
+		" Open the quickfix window below the current window
+		botright copen
+		call delete(tmpfile)
+	endif
 endfunction
 
 "-----------------------------------------------------------------------------
