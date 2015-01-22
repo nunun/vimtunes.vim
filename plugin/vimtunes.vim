@@ -22,6 +22,7 @@ let use2 = {} "priority 2 (low)
 let use0["vim"]		= (1)
 let use0["gvim"]	= (1) && has("gui_running")
 let use0["macvim"]	= (1) && has("gui_macvim")
+let use0["globalvars"]	= (1)
 " editor keymaps and control
 let use2["shortcut"]	= (1) && has("windows") "[sn][sN][sh][sj][sk][sl]
 let use2["inputmap"]	= (1)
@@ -78,7 +79,7 @@ function! vimtunes.tune(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" vim
+" vim environments
 "-----------------------------------------------------------------------------
 function! vimtunes.vim(...) dict
 	set tabstop=8
@@ -168,6 +169,14 @@ function! vimtunes.macvim(...) dict
 		call self.rmrf(shellescape(filename))
 		echo filename. " removed."
 	endfor
+endfunction
+
+"-----------------------------------------------------------------------------
+" global variables
+"-----------------------------------------------------------------------------
+function! vimtunes.globalvars(...) dict
+	let g:vimtunes_find =
+	\	get(g:, 'vimtunes_find', (has('win32'))? 'find.exe' : 'find')
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -1536,7 +1545,8 @@ function! vimtunes.VimFindCommand(...) dict
 		return
 	endif
 
-	let l:list = system("find ". path. " -name '". pattern. "' | grep -v .svn ")
+	let l:find = g:vimtunes_find
+	let l:list = system(l:find. " ". path. " -name '". pattern. "' | grep -v .svn ")
 	let l:num = strlen(substitute(l:list, "[^\n]", "", "g"))
 	if l:num < 1
 		echo "'". pattern. "' not found"
