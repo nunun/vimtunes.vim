@@ -52,7 +52,7 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["vimfind"]	= (1)
-let use2["vimbishell"]	= (1)
+let use2["vimshellbi"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -1576,18 +1576,18 @@ function! vimtunes.VimFindCommand(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" vimbishell
+" vimshellbi
 "-----------------------------------------------------------------------------
-function! vimtunes.vimbishell(...) dict
+function! vimtunes.vimshellbi(...) dict
 	" keymaps
-	nmap H :VimBuiltInShell<cr>
+	nmap H :VimShellBuiltIn<cr>
 
-	" Start Vim BuiltIn Shell
-	command! -nargs=* -complete=file VimBuiltInShell
-	    \ :call vimtunes.VimBuiltInShellCommand(<f-args>)
+	" VimShell BuiltIn
+	command! -nargs=* -complete=file VimShellBuiltIn
+	    \ :call vimtunes.VimShellBuiltInCommand(<f-args>)
 endfunction
 
-function! vimtunes.VimBuiltInShellCommand(...) dict
+function! vimtunes.VimShellBuiltInCommand(...) dict
 	let cwd = getcwd()
 	cd! %:h
 	shell
