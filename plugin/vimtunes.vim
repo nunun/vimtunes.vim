@@ -52,6 +52,7 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["vimfind"]	= (1)
+let use2["vimshell"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -1572,6 +1573,25 @@ function! vimtunes.VimFindCommand(...) dict
 		call self.qf_toggle()
 		call delete(tmpfile)
 	endif
+endfunction
+
+"-----------------------------------------------------------------------------
+" vimshell
+"-----------------------------------------------------------------------------
+function! vimtunes.vimshell(...) dict
+	" keymaps
+	nmap H :VimShell<cr>
+
+	" Shell
+	command! -nargs=* -complete=file VimShell
+	    \ :call vimtunes.VimShellCommand(<f-args>)
+endfunction
+
+function! vimtunes.VimShellCommand(...) dict
+	let cwd = getcwd()
+	cd! %:h
+	shell
+	exec 'cd! "'. cwd. '"'
 endfunction
 
 "-----------------------------------------------------------------------------
