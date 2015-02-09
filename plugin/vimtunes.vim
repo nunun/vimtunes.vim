@@ -32,7 +32,7 @@ let use2["tabstop"]	= (1) "[st]
 let use2["listchars"]	= (1) "[sm]
 let use2["textmode"]	= (1) "[sM]
 let use2["textwrap"]	= (1) "[sw]
-let use2["colorcolumn"]	= (1) "[sc]
+let use2["colorcolumn"]	= (1) "[sc][sC]
 let use2["guioptions"]	= (1) && has("gui_running") "[sb]
 " fileformat
 let use2["linefeed"]	= (1) "[sV][sE]
@@ -458,16 +458,8 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.colorcolumn(...) dict
 	" keymap
-	map <silent> sC <Esc>:call vimtunes.change_colorcolumn()<CR>
 	map <silent> sc <Esc>:call vimtunes.change_colorcolumn_color()<CR>
-	" objects
-	let mat = {
-	    \ 0   : -1,
-	    \ 80  : 120,
-	    \ 120 : 80,
-	    \ }
-	let self.show_colorcolumn =
-	    \ g:CONFIGMATRIX.new("w:show_colorcolumn", "&cc", "0", mat)
+	map <silent> sC <Esc>:call vimtunes.change_colorcolumn_width()<CR>
 	" objects (color)
 	let mat_color = {
 	    \ 0 : 1,
@@ -478,15 +470,14 @@ function! vimtunes.colorcolumn(...) dict
 	let s:ccd=has("gui")? "0" : "2"
 	let self.show_colorcolumn_color =
 	    \ g:CONFIGMATRIX.new("w:show_colorcolumn_color", "s:ccc", s:ccd, mat_color)
-endfunction
-
-function! vimtunes.change_colorcolumn(...) dict
-	let num = self.show_colorcolumn.rotate()
-	if num < 0
-		let num = exists("b:cc")? b:cc : 80
-	endif
-	let cmd = "set cc=". num
-	exec cmd | echo cmd
+	" objects (width)
+	let mat_width = {
+	    \ 0   : -1,
+	    \ 80  : 120,
+	    \ 120 : 80,
+	    \ }
+	let self.show_colorcolumn_width =
+	    \ g:CONFIGMATRIX.new("w:show_colorcolumn_width", "&cc", "0", mat_width)
 endfunction
 
 function! vimtunes.change_colorcolumn_color(...) dict
@@ -494,18 +485,33 @@ function! vimtunes.change_colorcolumn_color(...) dict
 	if num == 0
 		if &cc == 0
 			exec "setlocal cc=". b:cc
+			let w:show_colorcolumn_width = b:cc
 		endif
 		hi clear ColorColumn
 		hi link ColorColumn ColorColumnN
 	elseif num == 1
 		if &cc == 0
 			exec "setlocal cc=". b:cc
+			let w:show_colorcolumn_width = b:cc
 		endif
 		hi clear ColorColumn
 		hi link ColorColumn ColorColumnS
 	else
 		setlocal cc=0
 	endif
+endfunction
+
+function! vimtunes.change_colorcolumn_width(...) dict
+	let num = self.show_colorcolumn_width.rotate()
+	if num < 0
+		let num = exists("b:cc")? b:cc : 80
+		hi clear ColorColumn
+		hi link ColorColumn ColorColumnN
+		let w:show_colorcolumn_color = 0
+		let w:show_colorcolumn_width = num
+	endif
+	let cmd = "set cc=". num
+	exec cmd | echo cmd
 endfunction
 
 "-----------------------------------------------------------------------------
