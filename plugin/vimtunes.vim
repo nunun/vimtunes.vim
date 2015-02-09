@@ -41,8 +41,6 @@ let use2["fileinfo"]	= (0) && use2["linefeed"] && use2["multibyte"]
 let use2["filetype"]	= (1)
 " highlight
 let use2["highlight"]	= (1) && has("syntax")
-let use2["cc80"]	= (1) && use2["highlight"]
-let use2["cc120"]	= (1) && use2["highlight"]
 " modern-features
 let use2["completion"]	= (1) "[C-d][C-n][C-p]
 let use2["omnifunc"]	= (0) && use2["completion"]
@@ -460,21 +458,54 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.colorcolumn(...) dict
 	" keymap
-	map sc <Esc>:call vimtunes.change_colorcolumn()<CR>
+	map <silent> sC <Esc>:call vimtunes.change_colorcolumn()<CR>
+	map <silent> sc <Esc>:call vimtunes.change_colorcolumn_color()<CR>
 	" objects
 	let mat = {
-	    \ 0   : 80,
+	    \ 0   : -1,
 	    \ 80  : 120,
-	    \ 120 : 0,
+	    \ 120 : 80,
 	    \ }
 	let self.show_colorcolumn =
 	    \ g:CONFIGMATRIX.new("w:show_colorcolumn", "&cc", "0", mat)
+	" objects (color)
+	let mat_color = {
+	    \ 0 : 1,
+	    \ 1 : 2,
+	    \ 2 : 0,
+	    \}
+	let s:ccc=0
+	let s:ccd=has("gui")? "0" : "2"
+	let self.show_colorcolumn_color =
+	    \ g:CONFIGMATRIX.new("w:show_colorcolumn_color", "s:ccc", s:ccd, mat_color)
 endfunction
 
 function! vimtunes.change_colorcolumn(...) dict
 	let num = self.show_colorcolumn.rotate()
+	if num < 0
+		let num = exists("b:cc")? b:cc : 80
+	endif
 	let cmd = "set cc=". num
-	exec cmd
+	exec cmd | echo cmd
+endfunction
+
+function! vimtunes.change_colorcolumn_color(...) dict
+	let num = self.show_colorcolumn_color.rotate()
+	if num == 0
+		if &cc == 0
+			exec "setlocal cc=". b:cc
+		endif
+		hi clear ColorColumn
+		hi link ColorColumn ColorColumnN
+	elseif num == 1
+		if &cc == 0
+			exec "setlocal cc=". b:cc
+		endif
+		hi clear ColorColumn
+		hi link ColorColumn ColorColumnS
+	else
+		setlocal cc=0
+	endif
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -654,6 +685,8 @@ endfunction
 " filetype
 "-----------------------------------------------------------------------------
 function! vimtunes.filetype(...) dict
+	autocmd FileType *        :call vimtunes.filetype_all()  " All
+
 	autocmd FileType vim      :call vimtunes.filetype_vim()  " Vim
 	autocmd FileType c        :call vimtunes.filetype_c()    " C
 	autocmd FileType cpp      :call vimtunes.filetype_cpp()  " C++
@@ -684,15 +717,16 @@ function! vimtunes.filetype(...) dict
 	autocmd FileType styl     :call vimtunes.filetype_styl() " Stylus
 endfunction
 
+function! vimtunes.filetype_all(...) dict
+	call self.setcc(80)
+endfunction
+
 function! vimtunes.filetype_vim(...) dict
 	setlocal tabstop=8
 	setlocal shiftwidth=8
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	if has("gui")
-		call self.cc80_enable()
-	endif
 endfunction
 
 function! vimtunes.filetype_c(...) dict
@@ -701,9 +735,6 @@ function! vimtunes.filetype_c(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	if has("gui")
-		call self.cc80_enable()
-	endif
 endfunction
 
 function! vimtunes.filetype_cpp(...) dict
@@ -712,9 +743,7 @@ function! vimtunes.filetype_cpp(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	if has("gui")
-		call self.col120_enable()
-	endif
+	call self.setcc(120)
 endfunction
 
 function! vimtunes.filetype_cs(...) dict
@@ -725,9 +754,6 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal smartindent
 	setlocal foldmethod=syntax
 	call self.close_folding()
-	if has("gui")
-		call self.cc80_enable()
-	endif
 endfunction
 
 function! vimtunes.filetype_go(...) dict
@@ -738,9 +764,6 @@ function! vimtunes.filetype_go(...) dict
 	setlocal smartindent
 	"setlocal foldmethod=syntax
 	"call self.close_folding()
-	if has("gui")
-		call self.cc80_enable()
-	endif
 endfunction
 
 function! vimtunes.filetype_objc(...) dict
@@ -749,9 +772,7 @@ function! vimtunes.filetype_objc(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	if has("gui")
-		call self.col120_enable()
-	endif
+	call self.setcc(120)
 endfunction
 
 function! vimtunes.filetype_java(...) dict
@@ -760,6 +781,7 @@ function! vimtunes.filetype_java(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(120)
 endfunction
 
 function! vimtunes.filetype_rb(...) dict
@@ -797,7 +819,6 @@ function! vimtunes.filetype_php(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	call self.col120_enable()
 endfunction
 
 function! vimtunes.filetype_sql(...) dict
@@ -826,6 +847,7 @@ function! vimtunes.filetype_js(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(120)
 endfunction
 
 function! vimtunes.filetype_json(...) dict
@@ -871,6 +893,14 @@ function! vimtunes.autoexpandtab()
 	endif
 endfunction
 
+" set colorcolumn
+function! vimtunes.setcc(cc)
+	let b:cc = a:cc
+	if has("gui")
+		exec "setlocal cc=". a:cc
+	endif
+endfunction
+
 "-----------------------------------------------------------------------------
 " highlight
 "-----------------------------------------------------------------------------
@@ -897,32 +927,6 @@ function! vimtunes.change_highlight(name, name_to_change) dict
 	let syn = self.highlighter.syntax[a:name_to_change]
 	let self.highlighter.syntax[a:name] = syn
 	call self.highlighter.hi(g:hi_color)
-endfunction
-
-"-----------------------------------------------------------------------------
-" cc80
-"-----------------------------------------------------------------------------
-function! vimtunes.cc80(...) dict
-	let self.use_cc80 = 1
-endfunction
-
-function! vimtunes.cc80_enable(...) dict
-	if self.use_cc80
-		set cc=80
-	endif
-endfunction
-
-"-----------------------------------------------------------------------------
-" cc120
-"-----------------------------------------------------------------------------
-function! vimtunes.cc120(...) dict
-	let self.use_cc120 = 1
-endfunction
-
-function! vimtunes.cc120_enable(...) dict
-	if self.use_cc120
-		set cc=120
-	endif
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -1928,11 +1932,12 @@ let HIGHLIGHT.syntax["FoldColumn"]	= ["black", "green", "none"]
 let HIGHLIGHT.syntax["vimFunc"]		= HIGHLIGHT.syntax["Normal"]
 let HIGHLIGHT.syntax["Ignore"]		= HIGHLIGHT.syntax["Special"]
 " feature specialized
-let HIGHLIGHT.syntax["OverCol"]		= ["none",   "none",  "underline"]
 let HIGHLIGHT.syntax["CsTemplateCS"]	= ["yellow", "none",  "none"]
 let HIGHLIGHT.syntax["CsTemplateTP"]	= ["green",  "none",  "bold"]
 let HIGHLIGHT.syntax["shDerefWordError"]= ["yellow", "none",  "bold"]
-let HIGHLIGHT.syntax["ColorColumn"]	= ["none",   "cc",    "none"]
+let HIGHLIGHT.syntax["ColorColumnN"]	= ["none",   "ccn",   "none"]
+let HIGHLIGHT.syntax["ColorColumnS"]	= ["none",   "ccs",   "none"]
+let HIGHLIGHT.syntax["ColorColumn"]	= HIGHLIGHT.syntax["ColorColumnN"]
 
 " syntax-highlight scheme mapping
 let HIGHLIGHT.map = {}
@@ -1961,7 +1966,8 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "red" : "DarkRed",
   \ "magenta" : "Magenta",
   \ "status" : "LightGray",
-  \ "cc" : "DarkBlue",
+  \ "ccn" : "DarkBlue",
+  \ "ccs" : "DarkRed",
   \ "tab" : "LightGray",
   \ "line" : "LightGray",
   \ "foldfg" : "Black", "foldbg" : "DarkRed",
@@ -1981,7 +1987,8 @@ let HIGHLIGHT.colors.toybox = {
   \ "red" : "#ee2211",
   \ "magenta" : "#cc4400",
   \ "status" : "#8899aa",
-  \ "cc" : "#092031",
+  \ "ccn" : "#112133",
+  \ "ccs" : "#314253",
   \ "tab" : "#556677",
   \ "line" : "#556677",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
@@ -2001,7 +2008,8 @@ let HIGHLIGHT.colors.horror = {
   \ "red" : "#cc4400",
   \ "magenta" : "#cc4400",
   \ "status" : "#8899aa",
-  \ "cc" : "#1a1e22",
+  \ "ccn" : "#1c1f24",
+  \ "ccs" : "#3c4044",
   \ "tab" : "#556677",
   \ "line" : "#556677",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
