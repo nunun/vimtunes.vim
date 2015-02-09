@@ -32,6 +32,7 @@ let use2["tabstop"]	= (1) "[st]
 let use2["listchars"]	= (1) "[sm]
 let use2["textmode"]	= (1) "[sM]
 let use2["textwrap"]	= (1) "[sw]
+let use2["colorcolumn"]	= (1) "[sc]
 let use2["guioptions"]	= (1) && has("gui_running") "[sb]
 " fileformat
 let use2["linefeed"]	= (1) "[sV][sE]
@@ -40,8 +41,8 @@ let use2["fileinfo"]	= (0) && use2["linefeed"] && use2["multibyte"]
 let use2["filetype"]	= (1)
 " highlight
 let use2["highlight"]	= (1) && has("syntax")
-let use2["col80"]	= (1) && use2["highlight"]
-let use2["col120"]	= (1) && use2["highlight"]
+let use2["cc80"]	= (1) && use2["highlight"]
+let use2["cc120"]	= (1) && use2["highlight"]
 " modern-features
 let use2["completion"]	= (1) "[C-d][C-n][C-p]
 let use2["omnifunc"]	= (0) && use2["completion"]
@@ -455,6 +456,28 @@ function! vimtunes.change_textwrap(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
+" colorcolumn
+"-----------------------------------------------------------------------------
+function! vimtunes.colorcolumn(...) dict
+	" keymap
+	map sc <Esc>:call vimtunes.change_colorcolumn()<CR>
+	" objects
+	let mat = {
+	    \ 0   : 80,
+	    \ 80  : 120,
+	    \ 120 : 0,
+	    \ }
+	let self.show_colorcolumn =
+	    \ g:CONFIGMATRIX.new("w:show_colorcolumn", "&cc", "0", mat)
+endfunction
+
+function! vimtunes.change_colorcolumn(...) dict
+	let num = self.show_colorcolumn.rotate()
+	let cmd = "set cc=". num
+	exec cmd
+endfunction
+
+"-----------------------------------------------------------------------------
 " guioptions
 "-----------------------------------------------------------------------------
 function! vimtunes.guioptions(...) dict
@@ -631,8 +654,7 @@ endfunction
 " filetype
 "-----------------------------------------------------------------------------
 function! vimtunes.filetype(...) dict
-	autocmd FileType snippets :call vimtunes.filetype_snippets() "snipMate snippets
-
+	autocmd FileType vim      :call vimtunes.filetype_vim()  " Vim
 	autocmd FileType c        :call vimtunes.filetype_c()    " C
 	autocmd FileType cpp      :call vimtunes.filetype_cpp()  " C++
 	autocmd FileType cs       :call vimtunes.filetype_cs()   " C#
@@ -660,74 +682,42 @@ function! vimtunes.filetype(...) dict
 	autocmd FileType jade     :call vimtunes.filetype_jade() " Jade
 	autocmd FileType css      :call vimtunes.filetype_css()  " CSS
 	autocmd FileType styl     :call vimtunes.filetype_styl() " Stylus
-
-	" ?
-	"autocmd FileType Rakefile :call vimtunes.filetype_rake() " Rakefile
-	"autocmd FileType Jakefile :call vimtunes.filetype_jake() " Jakefile
-
-	" BACKUP
-	"autocmd BufEnter *.snippets :call vimtunes.filetype_snippets() "snipMate snippets
-	"autocmd BufEnter *.c      :call vimtunes.filetype_c()    " C
-	"autocmd BufEnter *.cpp    :call vimtunes.filetype_cpp()  " C++
-	"autocmd BufEnter *.cs     :call vimtunes.filetype_cs()   " C#
-	"autocmd BufEnter *.m      :call vimtunes.filetype_objc() " Objective-C
-	"autocmd BufEnter *.mm     :call vimtunes.filetype_objc() " Objective-C (C++)
-	"autocmd BufEnter *.java   :call vimtunes.filetype_java() " Java
-	"autocmd BufEnter *.rb     :call vimtunes.filetype_rb()   " Ruby
-	"autocmd BufEnter Rakefile :call vimtunes.filetype_rake() " Rakefile
-	"autocmd BufEnter *.rake   :call vimtunes.filetype_rake() " Rakefile (.rake)
-	"autocmd BufEnter *.erb    :call vimtunes.filetype_html() " eRuby
-	"autocmd BufEnter *.yaml   :call vimtunes.filetype_yaml() " Yaml
-	"autocmd BufEnter *.py     :call vimtunes.filetype_py()   " Python
-	"autocmd BufEnter *.php    :call vimtunes.filetype_php()  " PHP
-	"autocmd BufEnter *.sql    :call vimtunes.filetype_sql()  " SQL
-	"autocmd BufEnter *.xml    :call vimtunes.filetype_xml()  " XML
-	"autocmd BufEnter *.html   :call vimtunes.filetype_html() " HTML
-	"autocmd BufEnter *.xhtml  :call vimtunes.filetype_html() " XHTML
-	"autocmd BufEnter *.js     :call vimtunes.filetype_js()   " JavaScript
-	"autocmd BufEnter *.json   :call vimtunes.filetype_json() " JSON
-	"autocmd BufEnter Jakefile :call vimtunes.filetype_jake() " Jakefile
-	"autocmd BufEnter *.ejs    :call vimtunes.filetype_html() " eJS
-	"autocmd BufEnter *.jade   :call vimtunes.filetype_jade() " Jade
-	"autocmd BufEnter *.css    :call vimtunes.filetype_css()  " CSS
-	"autocmd BufEnter *.styl   :call vimtunes.filetype_styl() " Stylus
 endfunction
 
-function! vimtunes.filetype_snippets(...) dict
-	"if !self.set_filetype_name_to_bufvar("snippets")
-	"	return
-	"endif
-	setlocal foldmethod=marker
-endfunction
-
-function! vimtunes.filetype_c(...) dict
-	"if !self.set_filetype_name_to_bufvar("c")
-	"	return
-	"endif
+function! vimtunes.filetype_vim(...) dict
 	setlocal tabstop=8
 	setlocal shiftwidth=8
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	"call self.col80_enable()
+	if has("gui")
+		call self.cc80_enable()
+	endif
+endfunction
+
+function! vimtunes.filetype_c(...) dict
+	setlocal tabstop=8
+	setlocal shiftwidth=8
+	call self.autoexpandtab()
+	setlocal autoindent
+	setlocal smartindent
+	if has("gui")
+		call self.cc80_enable()
+	endif
 endfunction
 
 function! vimtunes.filetype_cpp(...) dict
-	"if !self.set_filetype_name_to_bufvar("cpp")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	"call self.col120_enable()
+	if has("gui")
+		call self.col120_enable()
+	endif
 endfunction
 
 function! vimtunes.filetype_cs(...) dict
-	"if !self.set_filetype_name_to_bufvar("cs")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -735,13 +725,12 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal smartindent
 	setlocal foldmethod=syntax
 	call self.close_folding()
-	"call self.col120_enable()
+	if has("gui")
+		call self.cc80_enable()
+	endif
 endfunction
 
 function! vimtunes.filetype_go(...) dict
-	"if !self.set_filetype_name_to_bufvar("go")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -749,25 +738,23 @@ function! vimtunes.filetype_go(...) dict
 	setlocal smartindent
 	"setlocal foldmethod=syntax
 	"call self.close_folding()
-	"call self.col120_enable()
+	if has("gui")
+		call self.cc80_enable()
+	endif
 endfunction
 
 function! vimtunes.filetype_objc(...) dict
-	"if !self.set_filetype_name_to_bufvar("objc")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
-	"call self.col120_enable()
+	if has("gui")
+		call self.col120_enable()
+	endif
 endfunction
 
 function! vimtunes.filetype_java(...) dict
-	"if !self.set_filetype_name_to_bufvar("java")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -776,9 +763,6 @@ function! vimtunes.filetype_java(...) dict
 endfunction
 
 function! vimtunes.filetype_rb(...) dict
-	"if !self.set_filetype_name_to_bufvar("rb")
-	"	return
-	"endif
 	setlocal tabstop=2
 	setlocal shiftwidth=2
 	call self.autoexpandtab()
@@ -787,16 +771,10 @@ function! vimtunes.filetype_rb(...) dict
 endfunction
 
 function! vimtunes.filetype_rake(...) dict
-	"if !self.set_wrapper_filetype_name_to_bufvar("rake")
-	"	return
-	"endif
 	call self.filetype_rb()
 endfunction
 
 function! vimtunes.filetype_yaml(...) dict
-	"if !self.set_filetype_name_to_bufvar("yaml")
-	"	return
-	"endif
 	setlocal tabstop=2
 	setlocal shiftwidth=2
 	setlocal expandtab
@@ -805,9 +783,6 @@ function! vimtunes.filetype_yaml(...) dict
 endfunction
 
 function! vimtunes.filetype_py(...) dict
-	"if !self.set_filetype_name_to_bufvar("py")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	setlocal noexpandtab
@@ -817,9 +792,6 @@ function! vimtunes.filetype_py(...) dict
 endfunction
 
 function! vimtunes.filetype_php(...) dict
-	"if !self.set_filetype_name_to_bufvar("php")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -829,27 +801,18 @@ function! vimtunes.filetype_php(...) dict
 endfunction
 
 function! vimtunes.filetype_sql(...) dict
-	"if !self.set_filetype_name_to_bufvar("sql")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	setlocal expandtab
 endfunction
 
 function! vimtunes.filetype_xml(...) dict
-	"if !self.set_filetype_name_to_bufvar("xml")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
 endfunction
 
 function! vimtunes.filetype_html(...) dict
-	"if !self.set_filetype_name_to_bufvar("html")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -858,9 +821,6 @@ function! vimtunes.filetype_html(...) dict
 endfunction
 
 function! vimtunes.filetype_js(...) dict
-	"if !self.set_filetype_name_to_bufvar("js")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -869,9 +829,6 @@ function! vimtunes.filetype_js(...) dict
 endfunction
 
 function! vimtunes.filetype_json(...) dict
-	"if !self.set_filetype_name_to_bufvar("json")
-	"	return
-	"endif
 	setlocal tabstop=2
 	setlocal shiftwidth=2
 	call self.autoexpandtab()
@@ -880,17 +837,11 @@ function! vimtunes.filetype_json(...) dict
 endfunction
 
 function! vimtunes.filetype_jake(...) dict
-	"if !self.set_wrapper_filetype_name_to_bufvar("jake")
-	"	return
-	"endif
 	setlocal ft=javascript
 	call self.filetype_js()
 endfunction
 
 function! vimtunes.filetype_jade(...) dict
-	"if !self.set_filetype_name_to_bufvar("jade")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -899,9 +850,6 @@ function! vimtunes.filetype_jade(...) dict
 endfunction
 
 function! vimtunes.filetype_css(...) dict
-	"if !self.set_filetype_name_to_bufvar("css")
-	"	return
-	"endif
 	setlocal tabstop=4
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
@@ -910,30 +858,9 @@ function! vimtunes.filetype_css(...) dict
 endfunction
 
 function! vimtunes.filetype_styl(...) dict
-	"if !self.set_wrapper_filetype_name_to_bufvar("styl")
-	"	return
-	"endif
 	setlocal ft=css
 	call self.filetype_css()
 endfunction
-
-" check and set filetype string to buffer variable.
-"function! vimtunes.set_filetype_name_to_bufvar(ft)
-"	if exists("b:ft") && b:ft == a:ft
-"		return 0
-"	endif
-"	let b:ft = a:ft
-"	return 1
-"endfunction
-
-" check and set wrapper filetype string to buffer variable.
-"function! vimtunes.set_wrapper_filetype_name_to_bufvar(ft)
-"	if exists("b:wft") && b:wft == a:ft
-"		return 0
-"	endif
-"	let b:wft = a:ft
-"	return 1
-"endfunction
 
 " detect indent and set expadtab or noexpandtab automatically.
 function! vimtunes.autoexpandtab()
@@ -973,30 +900,28 @@ function! vimtunes.change_highlight(name, name_to_change) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" col80
+" cc80
 "-----------------------------------------------------------------------------
-function! vimtunes.col80(...) dict
-	let self.use_col80 = 1
+function! vimtunes.cc80(...) dict
+	let self.use_cc80 = 1
 endfunction
 
-function! vimtunes.col80_enable(...) dict
-	if self.use_col80
-		match none
-		match OverCol /\%>80v./
+function! vimtunes.cc80_enable(...) dict
+	if self.use_cc80
+		set cc=80
 	endif
 endfunction
 
 "-----------------------------------------------------------------------------
-" col120
+" cc120
 "-----------------------------------------------------------------------------
-function! vimtunes.col120(...) dict
-	let self.use_col120 = 1
+function! vimtunes.cc120(...) dict
+	let self.use_cc120 = 1
 endfunction
 
-function! vimtunes.col120_enable(...) dict
-	if self.use_col120
-		match none
-		match OverCol /\%>120v./
+function! vimtunes.cc120_enable(...) dict
+	if self.use_cc120
+		set cc=120
 	endif
 endfunction
 
@@ -2007,6 +1932,7 @@ let HIGHLIGHT.syntax["OverCol"]		= ["none",   "none",  "underline"]
 let HIGHLIGHT.syntax["CsTemplateCS"]	= ["yellow", "none",  "none"]
 let HIGHLIGHT.syntax["CsTemplateTP"]	= ["green",  "none",  "bold"]
 let HIGHLIGHT.syntax["shDerefWordError"]= ["yellow", "none",  "bold"]
+let HIGHLIGHT.syntax["ColorColumn"]	= ["none",   "cc",    "none"]
 
 " syntax-highlight scheme mapping
 let HIGHLIGHT.map = {}
@@ -2035,6 +1961,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "red" : "DarkRed",
   \ "magenta" : "Magenta",
   \ "status" : "LightGray",
+  \ "cc" : "DarkBlue",
   \ "tab" : "LightGray",
   \ "line" : "LightGray",
   \ "foldfg" : "Black", "foldbg" : "DarkRed",
@@ -2054,6 +1981,7 @@ let HIGHLIGHT.colors.toybox = {
   \ "red" : "#ee2211",
   \ "magenta" : "#cc4400",
   \ "status" : "#8899aa",
+  \ "cc" : "#222222",
   \ "tab" : "#556677",
   \ "line" : "#556677",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
@@ -2073,6 +2001,7 @@ let HIGHLIGHT.colors.horror = {
   \ "red" : "#cc4400",
   \ "magenta" : "#cc4400",
   \ "status" : "#8899aa",
+  \ "cc" : "#2c3034",
   \ "tab" : "#556677",
   \ "line" : "#556677",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
