@@ -484,15 +484,17 @@ function! vimtunes.change_colorcolumn_color(...) dict
 	let num = self.show_colorcolumn_color.rotate()
 	if num == 0
 		if &cc == 0
-			exec "setlocal cc=". b:cc
-			let w:show_colorcolumn_width = b:cc
+			let col = exists("b:cc")? b:cc : 80
+			exec "setlocal cc=". col
+			let w:show_colorcolumn_width = col
 		endif
 		hi clear ColorColumn
 		hi link ColorColumn ColorColumnN
 	elseif num == 1
 		if &cc == 0
-			exec "setlocal cc=". b:cc
-			let w:show_colorcolumn_width = b:cc
+			let col = exists("b:cc")? b:cc : 80
+			exec "setlocal cc=". col
+			let w:show_colorcolumn_width = col
 		endif
 		hi clear ColorColumn
 		hi link ColorColumn ColorColumnS
@@ -504,11 +506,11 @@ endfunction
 function! vimtunes.change_colorcolumn_width(...) dict
 	let num = self.show_colorcolumn_width.rotate()
 	if num < 0
-		let num = exists("b:cc")? b:cc : 80
+		let col = exists("b:cc")? b:cc : 80
 		hi clear ColorColumn
 		hi link ColorColumn ColorColumnN
 		let w:show_colorcolumn_color = 0
-		let w:show_colorcolumn_width = num
+		let w:show_colorcolumn_width = col
 	endif
 	let cmd = "set cc=". num
 	exec cmd | echo cmd
@@ -724,7 +726,7 @@ function! vimtunes.filetype(...) dict
 endfunction
 
 function! vimtunes.filetype_all(...) dict
-	call self.setcc(80)
+	"call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_vim(...) dict
@@ -733,6 +735,7 @@ function! vimtunes.filetype_vim(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_c(...) dict
@@ -741,6 +744,7 @@ function! vimtunes.filetype_c(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_cpp(...) dict
@@ -760,6 +764,7 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal smartindent
 	setlocal foldmethod=syntax
 	call self.close_folding()
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_go(...) dict
@@ -770,6 +775,7 @@ function! vimtunes.filetype_go(...) dict
 	setlocal smartindent
 	"setlocal foldmethod=syntax
 	"call self.close_folding()
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_objc(...) dict
@@ -796,6 +802,7 @@ function! vimtunes.filetype_rb(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_rake(...) dict
@@ -817,6 +824,7 @@ function! vimtunes.filetype_py(...) dict
 	setlocal autoindent
 	setlocal smartindent
 	call self.change_listchars(2)
+	call self.setcc(80)
 endfunction
 
 function! vimtunes.filetype_php(...) dict
@@ -825,6 +833,7 @@ function! vimtunes.filetype_php(...) dict
 	call self.autoexpandtab()
 	setlocal autoindent
 	setlocal smartindent
+	call self.setcc(120)
 endfunction
 
 function! vimtunes.filetype_sql(...) dict
