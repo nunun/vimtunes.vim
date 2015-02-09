@@ -474,7 +474,7 @@ function! vimtunes.colorcolumn(...) dict
 	    \ 1 : 2,
 	    \ 2 : 0,
 	    \}
-	let s:ccc=0
+	let s:ccc=has("gui")?  0  :  2
 	let s:ccd=has("gui")? "0" : "2"
 	let self.show_colorcolumn_color =
 	    \ g:CONFIGMATRIX.new("w:show_colorcolumn_color", "s:ccc", s:ccd, mat_color)
@@ -1967,7 +1967,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "magenta" : "Magenta",
   \ "status" : "LightGray",
   \ "ccn" : "DarkBlue",
-  \ "ccs" : "DarkRed",
+  \ "ccs" : "DarkGray",
   \ "tab" : "LightGray",
   \ "line" : "LightGray",
   \ "foldfg" : "Black", "foldbg" : "DarkRed",
