@@ -1436,7 +1436,7 @@ function! vimtunes.vimgrep(...) dict
 	" keymaps
 	"map ? :VimGrep ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
 	"map s? ?
-	map s? :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
+	map s/ :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
 
 	" VimGrep
 	command! -nargs=* -complete=file VimGrep
@@ -1469,7 +1469,7 @@ endfunction
 function! vimtunes.vimfind(...) dict
 	" keymaps
 	"map ? :VimFind ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
-	map s/ :VimFind . *<c-r>=expand("<cword>")<cr>*
+	map s? :VimFind . *<c-r>=expand("<cword>")<cr>*
 
 	" VimFind
 	command! -nargs=* -complete=file VimFind
