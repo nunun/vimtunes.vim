@@ -1464,7 +1464,9 @@ endfunction
 " vimgrep
 "-----------------------------------------------------------------------------
 function! vimtunes.vimgrep(...) dict
-	" keymaps
+	" *Attenstion*
+	" no keymaps for 'VimGrep' command is not assigned!
+	" this is used from '.vimrc' only now.
 	"map ? :VimGrep ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
 	"map s? ?
 	"map s/ :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
@@ -1498,7 +1500,9 @@ endfunction
 " vimfind
 "-----------------------------------------------------------------------------
 function! vimtunes.vimfind(...) dict
-	" keymaps
+	" *Attenstion*
+	" no keymaps for 'VimFind' command is not assigned!
+	" this is used from '.vimrc' only now.
 	"map ? :VimFind ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
 	"map s? :VimFind . *<c-r>=expand("<cword>")<cr>*
 
