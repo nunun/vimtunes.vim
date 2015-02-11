@@ -522,7 +522,8 @@ function! vimtunes.change_colorcolumn_width(...) dict
 		let w:show_colorcolumn_width = l:cc
 	endif
 	let cmd = "set cc=". num
-	exec cmd | echo cmd
+	exec cmd
+	"echo cmd
 endfunction
 
 " setup colorcolumn
