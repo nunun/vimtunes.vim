@@ -192,6 +192,16 @@ function! vimtunes.shortcut(...) dict
 	" repeat
 	noremap s. .
 
+	" expand selection
+	vmap <S-j> ojo
+	vmap <S-k> oko
+	vmap <S-h> oho
+	vmap <S-l> olo
+	vmap <S-w> owo
+	vmap <S-b> obo
+	vmap +     o{o
+	vmap -     o}o
+
 	"split window
 	map <silent> sn <Esc><C-W>S:call vimtunes.hresize(24)<CR>
 	map <silent> sN <Esc><C-W><C-V>:call vimtunes.hresize(24)<CR>
