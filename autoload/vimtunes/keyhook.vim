@@ -92,8 +92,8 @@ function! s:add_hook(hookname, mapcmd, key, args)
 	let options = (exists('a:args[1]'))? a:args[1] : ''
 	if !exists('s:unmapcmd[a:mapcmd]')
 		throw 'mapcmd "'. a:mapcmd. '" does not supported.'
-		    . ' supported commands are: '
-		    . '['. join(keys(a:unmapcmd), ', '). ']'
+		\   . ' supported commands are: '
+		\   . '['. join(keys(a:unmapcmd), ', '). ']'
 	endif
 	" auto add empty map to defaul if not found.
 	if a:hookname != 'default'
