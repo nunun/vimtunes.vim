@@ -183,24 +183,22 @@ endfunction
 " shortcut
 "-----------------------------------------------------------------------------
 function! vimtunes.shortcut(...) dict
-	"save & load
-	"map <silent> sw <Esc>:w!<CR>
-	"map          so <Esc>:o<Space>
-	"map          sr <Esc>:r<Space>
-	"map          sq <Esc>:q<CR>
+	" expand selection
+	vmap <C-j> ojo
+	vmap <C-k> oko
+	vmap <C-h> oho
+	vmap <C-l> olo
+	vmap <C-w> owo
+	vmap <C-b> obo
+	vmap +     o{o
+	vmap -     o}o
+
+	" jumplist
+	"nnoremap <C-o> :echo bufname("%")<CR><C-o>
+	nnoremap  <C-g> :echo bufname("%")<CR><C-i>
 
 	" repeat
 	noremap s. .
-
-	" expand selection
-	vmap <S-j> ojo
-	vmap <S-k> oko
-	vmap <S-h> oho
-	vmap <S-l> olo
-	vmap <S-w> owo
-	vmap <S-b> obo
-	vmap +     o{o
-	vmap -     o}o
 
 	"split window
 	map <silent> sn <Esc><C-W>S:call vimtunes.hresize(24)<CR>
@@ -2487,4 +2485,9 @@ unlet s:save_cpo
 "	nunmap <C-n>
 "	nmap <silent> <C-p> :call CtrlPCall()<CR>
 "endfunction
+	"save & load
+	"map <silent> sw <Esc>:w!<CR>
+	"map          so <Esc>:o<Space>
+	"map          sr <Esc>:r<Space>
+	"map          sq <Esc>:q<CR>
 "}}}
