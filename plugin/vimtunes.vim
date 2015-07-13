@@ -138,10 +138,18 @@ function! vimtunes.gvim(...) dict
 		set printfont=*-lucidatypewriter-medium-r-normal
 		    \-*-*-180-*-*-m-*-*
 	elseif has("gui_win32")
-		set guifont=ms_gothic:h16:cSHIFTJIS
-		set printfont=ms_gothic:h16:cSHIFTJIS
+		try
+			set guifont=Consolas:h18:cSHIFTJIS
+			set guifontwide=Consolas:h18:cSHIFTJIS
+			set printfont=Consolas:h18:cSHIFTJIS
+		catch
+			set guifont=ms_gothic:h16:cSHIFTJIS
+			set guifontwide=ms_gothic:h16:cSHIFTJIS
+			set printfont=ms_gothic:h16:cSHIFTJIS
+		endtry
 	elseif has("gui_macvim")
 		set guifont=Menlo:h24
+		set guifontwide=Menlo:h24
 		set printfont=Menlo:h24
 		set fenc=
 		set imdisable
