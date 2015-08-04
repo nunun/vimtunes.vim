@@ -1974,7 +1974,7 @@ let HIGHLIGHT.syntax["SpecialKey"]	= HIGHLIGHT.syntax["SpecialKeyRed"]
 let HIGHLIGHT.syntax["Search"]		= ["fore",   "red",    "none"]
 let HIGHLIGHT.syntax["Folded"]		= ["foldfg", "foldbg", "none"]
 let HIGHLIGHT.syntax["Directory"]	= ["red",    "bg",     "none"]
-let HIGHLIGHT.syntax["LineNr"]		= ["line",   "blue",   "underline"]
+let HIGHLIGHT.syntax["LineNr"]		= ["line",   "linebg", "lined"]
 let HIGHLIGHT.syntax["MatchParen"]	= ["red",    "bg",     "none"]
 " Diff
 let HIGHLIGHT.syntax["DiffAdd"]		= ["fore",    "red",  "none"]
@@ -2007,6 +2007,11 @@ let HIGHLIGHT.syntax["shDerefWordError"]= ["yellow", "none",  "bold"]
 let HIGHLIGHT.syntax["ColorColumn1"]	= ["none",   "cc1",   "none"]
 let HIGHLIGHT.syntax["ColorColumn2"]	= ["none",   "cc2",   "none"]
 let HIGHLIGHT.syntax["ColorColumn"]	= HIGHLIGHT.syntax["ColorColumn1"]
+" GitGutter
+let HIGHLIGHT.syntax["GitGutterAdd"]          = ["green",  "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterChange"]       = ["yellow", "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterDelete"]       = ["red",    "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterChangeDelete"] = ["red",    "linebg", "none"]
 
 " syntax-highlight scheme mapping
 let HIGHLIGHT.map = {}
@@ -2037,7 +2042,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "status" : "LightGray",
   \ "cc1" : "DarkBlue", "cc2" : "DarkGray",
   \ "tab" : "LightGray",
-  \ "line" : "LightGray",
+  \ "line" : "Black", "linebg" : "DarkGray", "lined" : "NONE",
   \ "foldfg" : "Black", "foldbg" : "DarkRed",
   \ "visualfg" : "", "visualbg" : "", "visual" : "reverse",
   \ "underline" : "underline", "underline2" : "underline",
@@ -2057,7 +2062,7 @@ let HIGHLIGHT.colors.toybox = {
   \ "status" : "#8899aa",
   \ "cc1" : "#112133", "cc2" : "#314253",
   \ "tab" : "#556677",
-  \ "line" : "#556677",
+  \ "line" : "#3f4f5f", "linebg" : "#334455", "lined" : "NONE",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
   \ "visualfg" : "", "visualbg" : "#3868cf", "visual" : "",
   \ "underline" : "underline", "underline2" : "underline",
@@ -2077,7 +2082,7 @@ let HIGHLIGHT.colors.horror = {
   \ "status" : "#8899aa",
   \ "cc1" : "#1c1f22", "cc2" : "#98e8b8",
   \ "tab" : "#556677",
-  \ "line" : "#556677",
+  \ "line" : "#46484d", "linebg" : "#292c31", "lined" : "NONE",
   \ "foldfg" : "#cc4400", "foldbg": "#2c2024",
   \ "visualfg" : "", "visualbg" : "#47604c", "visual" : "",
   \ "underline" : "underline", "underline2" : "underline",
