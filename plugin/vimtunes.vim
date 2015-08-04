@@ -2007,6 +2007,16 @@ let HIGHLIGHT.syntax["shDerefWordError"]= ["yellow", "none",  "bold"]
 let HIGHLIGHT.syntax["ColorColumn1"]	= ["none",   "cc1",   "none"]
 let HIGHLIGHT.syntax["ColorColumn2"]	= ["none",   "cc2",   "none"]
 let HIGHLIGHT.syntax["ColorColumn"]	= HIGHLIGHT.syntax["ColorColumn1"]
+" GitGutter
+let HIGHLIGHT.syntax["GitGutterAdd"]          = ["green", "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterChange"]       = ["blue",  "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterDelete"]       = ["red",   "linebg", "none"]
+let HIGHLIGHT.syntax["GitGutterChangeDelete"] = ["red",   "linebg", "none"]
+" SvnGutter
+let HIGHLIGHT.syntax["SvnGutterAdd"]          = ["green", "linebg", "none"]
+let HIGHLIGHT.syntax["SvnGutterChange"]       = ["blue",  "linebg", "none"]
+let HIGHLIGHT.syntax["SvnGutterDelete"]       = ["red",   "linebg", "none"]
+let HIGHLIGHT.syntax["SvnGutterChangeDelete"] = ["red",   "linebg", "none"]
 
 
 " syntax-highlight scheme mapping
