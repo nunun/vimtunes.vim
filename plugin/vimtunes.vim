@@ -111,6 +111,7 @@ function! vimtunes.vim(...) dict
 	set incsearch
 	set noswapfile
 	set novisualbell
+	set spelllang=
 	set t_vb=
 	if has('win32') "win32/win64
 		set noundofile
