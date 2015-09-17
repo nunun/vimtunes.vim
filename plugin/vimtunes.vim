@@ -1579,7 +1579,7 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.vimshellbi(...) dict
 	" keymaps
-	nmap H :VimShellBuiltIn<cr>
+	nmap 1sh :VimShellBuiltIn<cr>
 
 	" VimShell BuiltIn
 	command! -nargs=* -complete=file VimShellBuiltIn
