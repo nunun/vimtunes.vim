@@ -553,6 +553,17 @@ function! vimtunes.setup_colorcolumn(width, color)
 	call self.change_colorcolumn_color(a:color)
 endfunction
 
+" setup object oriented keywords
+function! vimtunes.setup_object_oriented_keywords()
+	syntax keyword KeywordPublic    public
+	syntax keyword KeywordProtected protected
+	syntax keyword KeywordPrivate   private
+	syntax keyword KeywordStatic    static
+	syntax keyword KeywordPartial   partial
+	syntax keyword KeywordVirtual   virtual
+	syntax keyword KeywordOverride  override
+endfunction
+
 
 "-----------------------------------------------------------------------------
 " guioptions
@@ -824,6 +835,7 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal foldmethod=syntax
 	call self.open_folding()
 	call self.setup_colorcolumn(80, 0)
+	call self.setup_object_oriented_keywords()
 endfunction
 
 function! vimtunes.filetype_go(...) dict
@@ -2018,7 +2030,14 @@ let HIGHLIGHT.syntax["SvnGutterAdd"]          = ["green", "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterChange"]       = ["blue",  "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterDelete"]       = ["red",   "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterChangeDelete"] = ["red",   "linebg", "none"]
-
+" keywords
+let HIGHLIGHT.syntax["KeywordPublic"]    = ["black", "public",    "none"]
+let HIGHLIGHT.syntax["KeywordProtected"] = ["black", "protected", "none"]
+let HIGHLIGHT.syntax["KeywordPrivate"]   = ["black", "private",   "none"]
+let HIGHLIGHT.syntax["KeywordVirtual"]   = ["black", "virtual",   "none"]
+let HIGHLIGHT.syntax["KeywordOverride"]  = ["black", "override",  "none"]
+let HIGHLIGHT.syntax["KeywordStatic"]    = ["black", "static",    "none"]
+let HIGHLIGHT.syntax["KeywordPartial"]   = ["black", "partial",   "none"]
 
 " syntax-highlight scheme mapping
 let HIGHLIGHT.map = {}
@@ -2046,6 +2065,9 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "yellow" : "DarkYellow", "special" : "DarkYellow",
   \ "red" : "DarkRed",
   \ "magenta" : "Magenta",
+  \ "public" : "DarkCyan", "protected" : "DarkCyan", "private" : "DarkCyan",
+  \ "virtual" : "DarkCyan", "override" : "DarkCyan",
+  \ "static" : "DarkCyan", "partial" : "DarkCyan",
   \ "status" : "LightGray",
   \ "cc1" : "DarkBlue", "cc2" : "DarkGray",
   \ "tab" : "LightGray",
@@ -2066,6 +2088,9 @@ let HIGHLIGHT.colors.toybox = {
   \ "yellow" : "#ddee22", "special" : "#e4dc22",
   \ "red" : "#ee2211",
   \ "magenta" : "#cc4400",
+  \ "public" : "#22ddcc", "protected" : "#22ddcc", "private" : "#22ddcc",
+  \ "virtual" : "#22ddcc", "override" : "#22ddcc",
+  \ "static" : "#22ddcc", "partial" : "#22ddcc",
   \ "status" : "#8899aa",
   \ "cc1" : "#112133", "cc2" : "#314253",
   \ "tab" : "#556677",
@@ -2085,7 +2110,10 @@ let HIGHLIGHT.colors.horror = {
   \ "blue" : "#223377",
   \ "yellow" : "#ddcc88", "special" : "#ddcc88",
   \ "red" : "#cc4400",
-  \ "magenta" : "#cc4400",
+  \ "magenta" : "#ccbb00",
+  \ "public" : "#ff69b4", "protected" : "#8a2be2", "private" : "#dc143c",
+  \ "virtual" : "#eee8aa", "override" : "#bdb76b",
+  \ "static" : "#80c0ee", "partial" : "#90ee90",
   \ "status" : "#8899aa",
   \ "cc1" : "#1c1f22", "cc2" : "#98e8b8",
   \ "tab" : "#556677",
