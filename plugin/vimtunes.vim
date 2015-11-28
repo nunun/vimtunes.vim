@@ -822,7 +822,7 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal autoindent
 	setlocal smartindent
 	setlocal foldmethod=syntax
-	"call self.close_folding()
+	call self.open_folding()
 	call self.setup_colorcolumn(80, 0)
 endfunction
 
