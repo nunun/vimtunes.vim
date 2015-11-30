@@ -831,7 +831,9 @@ function! vimtunes.filetype_cs(...) dict
 	setlocal shiftwidth=4
 	call self.autoexpandtab()
 	setlocal autoindent
-	setlocal smartindent
+	setlocal nosmartindent
+	setlocal indentkeys-=0#
+	setlocal cinkeys-=0#
 	setlocal foldmethod=syntax
 	call self.open_folding()
 	call self.setup_colorcolumn(80, 0)
