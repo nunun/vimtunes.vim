@@ -1228,11 +1228,13 @@ function! vimtunes.qf_mark(resume)
 		endif
 	endif
 endfunction
-function! vimtunes.qf_open()
+function! vimtunes.qf_open(...)
+	let cmd = (!exists("a:1"))? ":copen" : a:1
 	if !self.qf_exists()
 		call self.qf_mark(0)
 		let w = winnr()
-		exec ":copen"
+		echo cmd
+		exec cmd
 		exec "normal \<Esc>". w. "\<C-W>\<C-W>"
 	endif
 	if len(getqflist()) > 0
@@ -1249,8 +1251,17 @@ function! vimtunes.qf_close()
 	redraw | echo "quickfix closed."
 	call vimtunes#keyhook#deactivate("qf")
 endfunction
-function! vimtunes.qf_toggle()
-	return (self.qf_exists())? self.qf_close() : self.qf_open()
+function! vimtunes.qf_toggle(...)
+	if self.qf_exists()
+		return self.qf_close()
+	else
+		if exists("a:1")
+			echo a:1
+			return self.qf_open(a:1)
+		else
+			return self.qf_open()
+		endif
+	endif
 endfunction
 
 "-----------------------------------------------------------------------------
