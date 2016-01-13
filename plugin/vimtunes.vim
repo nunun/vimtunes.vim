@@ -282,9 +282,7 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-d> <C-o>dw
 	
 	" only
-	"nmap so :exec (winnr("$") > 1)? ":only" : ":tabonly"<CR>
-	nmap so :only<CR>
-	nmap sO :tabonly<CR>
+	nmap <silent> so :call vimtunes.only()<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -1842,6 +1840,15 @@ function! vimtunes.hresize(...) dict
 	let nr = winnr()
 	if winheight(nr) < a:1
 		exec "resize ". string(a:1)
+	endif
+endfunction
+
+" only command
+function! vimtunes.only(...) dict
+	if winnr("$") > 1
+		only
+	elseif tabpagenr("$") > 1 && confirm("Close tabs ?", "Y\nn", 2) == 1
+		tabonly
 	endif
 endfunction
 
