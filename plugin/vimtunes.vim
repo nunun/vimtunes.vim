@@ -1847,8 +1847,12 @@ endfunction
 function! vimtunes.only(...) dict
 	if winnr("$") > 1
 		only
-	elseif tabpagenr("$") > 1 && confirm("Close tabs?", "Ok\nCancel") == 1
-		tabonly
+	elseif tabpagenr("$") > 1
+		let mesg = "Close multiple tabs. Is it Ok?"
+		let opts = "Ok\nCancel"
+		if confirm(mesg, opts) == 1
+			tabonly
+		endif
 	endif
 endfunction
 
