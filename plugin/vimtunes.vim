@@ -280,6 +280,9 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-w> <C-w>
 	"cmap <C-^>d     <C-o>dw
 	"cmap <C-^><C-d> <C-o>dw
+	
+	" only
+	nmap so :only<CR>:tabonly<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -344,7 +347,7 @@ endfunction
 "-----------------------------------------------------------------------------
 function! vimtunes.number(...) dict
 	" keymap
-	map sr <Esc>:call vimtunes.change_number()<CR>
+	map sm <Esc>:call vimtunes.change_number()<CR>
 	" objects
 	let mat = {
 	    \ 0 : 1,
