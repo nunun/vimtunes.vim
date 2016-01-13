@@ -282,8 +282,7 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-d> <C-o>dw
 	
 	" only
-	nmap <silent> so :call vimtunes.only()<CR>
-	nmap <silent> sO :tabonly<CR>
+	nmap <silent> so :call vimtunes.only(0)<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -1845,8 +1844,8 @@ function! vimtunes.hresize(...) dict
 endfunction
 
 " only command
-function! vimtunes.only(...) dict
-	if winnr("$") > 1
+function! vimtunes.only(isTabonly) dict
+	if winnr("$") > 1 && a:isTabonly <= 0
 		only
 	elseif tabpagenr("$") > 1
 		let mesg = "Close multiple tabs. Is it Ok?"
