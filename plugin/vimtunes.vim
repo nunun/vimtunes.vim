@@ -282,7 +282,8 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-d> <C-o>dw
 	
 	" only
-	nmap <silent> so :call vimtunes.only(0)<CR>
+	nmap <silent> so :call vimtunes.only(1)<CR>
+	nmap <silent> sO :only<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
