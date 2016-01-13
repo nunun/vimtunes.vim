@@ -283,6 +283,7 @@ function! vimtunes.inputmap(...) dict
 	
 	" only
 	nmap <silent> so :call vimtunes.only()<CR>
+	nmap <silent> sO :tabonly<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
