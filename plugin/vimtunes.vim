@@ -282,7 +282,8 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-d> <C-o>dw
 	
 	" only
-	nmap so :only<CR>:tabonly<CR>
+	nmap so :exec (winnr("$") > 1)? ":only" : ":tabonly"<CR>
+	nmap sO :tabonly<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
