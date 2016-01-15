@@ -213,8 +213,8 @@ function! vimtunes.shortcut(...) dict
 	noremap s. .
 	
 	" tabmove
-	nmap ss, :call vimtunes.tabmove(-1)<CR>
-	nmap ss. :call vimtunes.tabmove(+1)<CR>
+	nmap s< :call vimtunes.tabmove(-1)<CR>
+	nmap s> :call vimtunes.tabmove(+1)<CR>
 
 	" only
 	nmap <silent> so :call vimtunes.only(1)<CR>
