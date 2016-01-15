@@ -213,10 +213,10 @@ function! vimtunes.shortcut(...) dict
 	noremap s. .
 	
 	" tabmove
-	nmap <C-s>, :call vimtunes.tabmove(-1)<CR>
-	nmap <C-s>. :call vimtunes.tabmove(+1)<CR>
-	nmap <C-s>< :tabmove 0<CR>
-	nmap <C-s>> :tabmove 1000<CR>
+	nmap <C-s>, :call vimtunes.tabmove_left()<CR>
+	nmap <C-s>. :call vimtunes.tabmove_right()<CR>
+	nmap <C-s>0 :tabmove 0<CR>
+	nmap <C-s>$ :tabmove 1000<CR>
 
 	" only
 	nmap <silent> so :call vimtunes.only(1)<CR>
@@ -1863,6 +1863,16 @@ function! vimtunes.only(isTabonly) dict
 	endif
 endfunction
 
+" tabmove left command
+function! vimtunes.tabmove_left() dict
+	call self.tabmove(-1)
+endfunction
+
+" tabmove right command
+function! vimtunes.tabmove_right() dict
+	call self.tabmove(+1)
+endfunction
+
 " tabmove command
 function! vimtunes.tabmove(num) dict
 	if type(a:num) != type(0)
@@ -1872,7 +1882,7 @@ function! vimtunes.tabmove(num) dict
 	let tabcount = tabpagenr("$")
 	if pos < 0
 		let pos = tabcount - 1
-	elseif pos >= tabcount 
+	elseif pos >= tabcount
 		let pos = 0
 	endif
 	execute "tabmove " . pos
