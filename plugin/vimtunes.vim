@@ -211,6 +211,14 @@ function! vimtunes.shortcut(...) dict
 
 	" repeat
 	noremap s. .
+	
+	" tabmove
+	nmap ss, :call vimtunes.tabmove(-1)<CR>
+	nmap ss. :call vimtunes.tabmove(+1)<CR>
+
+	" only
+	nmap <silent> so :call vimtunes.only(1)<CR>
+	nmap <silent> sO :only<CR>
 
 	"split window
 	map <silent> sn <Esc><C-W>S:call vimtunes.hresize(24)<CR>
@@ -280,10 +288,6 @@ function! vimtunes.inputmap(...) dict
 	"cmap <C-^><C-w> <C-w>
 	"cmap <C-^>d     <C-o>dw
 	"cmap <C-^><C-d> <C-o>dw
-	
-	" only
-	nmap <silent> so :call vimtunes.only(1)<CR>
-	nmap <silent> sO :only<CR>
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -1855,6 +1859,21 @@ function! vimtunes.only(isTabonly) dict
 			tabonly
 		endif
 	endif
+endfunction
+
+" tabmove command
+function! vimtunes.tabmove(num) dict
+	if type(a:num) != type(0)
+		return
+	endif
+	let pos = tabpagenr() - 1 + a:num
+	let tabcount = tabpagenr("$")
+	if pos < 0
+		let pos = tabcount - 1
+	elseif pos >= tabcount 
+		let pos = 0
+	endif
+	execute "tabmove " . pos
 endfunction
 
 "#############################################################################
