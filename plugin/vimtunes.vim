@@ -217,14 +217,12 @@ function! vimtunes.shortcut(...) dict
 	nmap <C-s>. :call vimtunes.tabmove_right()<CR>
 	nmap <C-s>0 :tabmove 0<CR>
 	nmap <C-s>$ :tabmove 1000<CR>
-
-	" only
-	nmap <silent> so :call vimtunes.only(1)<CR>
-	nmap <silent> sO :only<CR>
+	nmap <C-s>o :call vimtunes.only(1)<CR>:echo "tabonly"<CR>
 
 	"split window
 	map <silent> sn <Esc><C-W>S:call vimtunes.hresize(24)<CR>
 	map <silent> sN <Esc><C-W><C-V>:call vimtunes.hresize(24)<CR>
+	map <silent> so :only<CR>
 
 	"move window
 	map <silent> sj <Esc><C-W>j:call vimtunes.hresize(24)<CR>
