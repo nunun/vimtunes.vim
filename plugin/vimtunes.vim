@@ -1865,12 +1865,20 @@ endfunction
 
 " tabmove left command
 function! vimtunes.tabmove_left() dict
-	call self.tabmove(-1)
+	if v:version >= 704
+		tabmove -1
+	else
+		call self.tabmove(-1)
+	endif
 endfunction
 
 " tabmove right command
 function! vimtunes.tabmove_right() dict
-	call self.tabmove(+1)
+	if v:version >= 704
+		tabmove +1
+	else
+		call self.tabmove(+1)
+	endif
 endfunction
 
 " tabmove command
