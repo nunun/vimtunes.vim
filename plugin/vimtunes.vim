@@ -1621,9 +1621,13 @@ endfunction
 
 function! vimtunes.VimShellBuiltInCommand(...) dict
 	let cwd = getcwd()
-	cd! %:h
-	shell
-	exec 'cd! "'. cwd. '"'
+	if has('mac') && has('gui')
+		exec '!open -a Terminal.app '. cwd
+	else
+		cd! %:h
+		shell
+		exec 'cd! "'. cwd. '"'
+	endif
 endfunction
 
 "-----------------------------------------------------------------------------
