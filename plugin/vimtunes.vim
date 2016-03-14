@@ -1620,12 +1620,19 @@ function! vimtunes.vimshellbi(...) dict
 endfunction
 
 function! vimtunes.VimShellBuiltInCommand(...) dict
-	let cwd = getcwd()
 	if has('mac') && has('gui')
 		let bwd = expand('%:p:h')
 		exec '!open -a Terminal.app '. bwd
-		exec 'cd! "'. cwd. '"'
+		"let cmd = '!osascript'
+		"\       . ' -e "tell application \"Terminal\" to activate"'
+		"\       . ' -e "tell application \"System Events\"'
+		"\       . ' to tell process \"Terminal\"'
+		"\       . ' to keystroke \"t\" using command down'
+		"\       . ' -e "tell application \"Terminal\"'
+		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
+		"exec cmd
 	else
+		let cwd = getcwd()
 		cd! %:h
 		shell
 		exec 'cd! "'. cwd. '"'
