@@ -1620,7 +1620,7 @@ function! vimtunes.vimshellbi(...) dict
 endfunction
 
 function! vimtunes.VimShellBuiltInCommand(...) dict
-	let cwd = getcwd()
+	let cwd = expand('%:p:h')
 	if has('mac') && has('gui')
 		exec '!open -a Terminal.app '. cwd
 	else
