@@ -110,9 +110,10 @@ function! vimtunes.vim(...) dict
 	"set noerrorbells
 	set incsearch
 	set noswapfile
-	set novisualbell
 	set spelllang=
+	set visualbell
 	set t_vb=
+	set noerrorbells
 	if has('win32') "win32/win64
 		set noundofile
 	elseif has('persistent_undo')
