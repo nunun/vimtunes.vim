@@ -111,9 +111,6 @@ function! vimtunes.vim(...) dict
 	set incsearch
 	set noswapfile
 	set spelllang=
-	set visualbell
-	set t_vb=
-	set noerrorbells
 	if has('win32') "win32/win64
 		set noundofile
 	elseif has('persistent_undo')
@@ -122,6 +119,11 @@ function! vimtunes.vim(...) dict
 	endif
 	"set verbose=9
 	filetype plugin on
+
+	" visualbell
+	set visualbell
+	set noerrorbells
+	au VimEnter * :set t_vb=
 endfunction
 
 "-----------------------------------------------------------------------------
