@@ -1517,30 +1517,34 @@ endfunction
 " vimgrep
 "-----------------------------------------------------------------------------
 function! vimtunes.vimgrep(...) dict
-	" *Attenstion*
-	" no keymaps for 'VimGrep' command is not assigned!
-	" this is used from '.vimrc' only now.
-	"map ? :VimGrep ./**/*.<c-r>=&ft<CR> <c-r>=expand("<cword>")<cr>
-	"map s? ?
-	"map s/ :VimGrep ./**/* <c-r>=expand("<cword>")<cr>
-
 	" VimGrep
 	command! -nargs=* -complete=file VimGrep
 	    \ :call vimtunes.VimGrepCommand(<f-args>)
 endfunction
 
 function! vimtunes.VimGrepCommand(...) dict
-	let mesg = "VimGrep: Path: "
-	let path = (!exists("a:1"))? inputdialog(mesg, "**/*", "") : a:1
+	" Path
+	let path = (exists("a:1"))? a:1 : ""
 	if path == ""
-		echo "VimGrep: cancelled."
-		return
+		"let path = substitute(path, "^.*(\\(.*\\)).*$", "\\1", "")
+		let path = inputdialog("VimGrep: Path: ", cwd(), "")
+		if path == ""
+			echo "VimGrep: cancelled."
+			return
+		endif
 	endif
-	let mesg = "VimGrep: Pattern: "
-	let pattern = (!exists("a:2"))? inputdialog(mesg, "", "") : a:2
+	if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\/\*$'
+		let path = path. ((path =~ '\/$')? '**/*' : '/**/*')
+	endif
+
+	" Pattern
+	let pattern = (exists("a:2"))? a:2 : ""
 	if pattern == ""
-		echo "VimGrep: cancelled."
-		return
+		let pattern = inputdialog("VimGrep: Pattern: ", "", "")
+		if pattern == ""
+			echo "VimGrep: cancelled."
+			return
+		endif
 	endif
 
 	" reopen vimgrep result.
