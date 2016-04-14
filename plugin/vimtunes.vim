@@ -1528,20 +1528,10 @@ function! vimtunes.VimGrepCommand(...) dict
 	" Path
 	let path = (exists("a:1"))? a:1 : ""
 	if path == ""
-		"let path = substitute(path, "^.*(\\(.*\\)).*$", "\\1", "")
 		let path = inputdialog("VimGrep: Path: ", cwd(), "")
 		if path == ""
 			echo "VimGrep: cancelled."
 			return
-		endif
-	endif
-	if has('win')
-		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\\\*$'
-			let path = path. ((path =~ '\\$')? '**\*' : '\**\*')
-		endif
-	else
-		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\/\*$'
-			let path = path. ((path =~ '\/$')? '**/*' : '/**/*')
 		endif
 	endif
 
@@ -1552,6 +1542,18 @@ function! vimtunes.VimGrepCommand(...) dict
 		if pattern == ""
 			echo "VimGrep: cancelled."
 			return
+		endif
+	endif
+
+	" Path Adjustment
+	let path = substitute(path, "\\s*$", "", "")
+	if has('win32')
+		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\\\*$'
+			let path = path. ((path =~ '\\$')? '**\*' : '\**\*')
+		endif
+	else
+		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\/\*$'
+			let path = path. ((path =~ '\/$')? '**/*' : '/**/*')
 		endif
 	endif
 
