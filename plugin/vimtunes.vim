@@ -1535,8 +1535,14 @@ function! vimtunes.VimGrepCommand(...) dict
 			return
 		endif
 	endif
-	if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\/\*$'
-		let path = path. ((path =~ '\/$')? '**/*' : '/**/*')
+	if has('win')
+		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\\\*$'
+			let path = path. ((path =~ '\\$')? '**\*' : '\**\*')
+		endif
+	else
+		if isdirectory(path) && path !~ '\*$' && path !~ '\*\*\/\*$'
+			let path = path. ((path =~ '\/$')? '**/*' : '/**/*')
+		endif
 	endif
 
 	" Pattern
