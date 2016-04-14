@@ -110,9 +110,10 @@ function! vimtunes.vim(...) dict
 	"set noerrorbells
 	set incsearch
 	set noswapfile
-	set novisualbell
 	set spelllang=
+	set visualbell
 	set t_vb=
+	set noerrorbells
 	if has('win32') "win32/win64
 		set noundofile
 	elseif has('persistent_undo')
@@ -570,6 +571,7 @@ function! vimtunes.setup_object_oriented_keywords()
 	syntax keyword KeywordPartial   partial
 	syntax keyword KeywordVirtual   virtual
 	syntax keyword KeywordOverride  override
+	syntax keyword KeywordAbstract  abstract
 endfunction
 
 
@@ -1624,10 +1626,23 @@ function! vimtunes.vimshellbi(...) dict
 endfunction
 
 function! vimtunes.VimShellBuiltInCommand(...) dict
-	let cwd = getcwd()
-	cd! %:h
-	shell
-	exec 'cd! "'. cwd. '"'
+	if has('mac') && has('gui')
+		let bwd = expand('%:p:h')
+		exec '!open -a Terminal.app '. bwd
+		"let cmd = '!osascript'
+		"\       . ' -e "tell application \"Terminal\" to activate"'
+		"\       . ' -e "tell application \"System Events\"'
+		"\       . ' to tell process \"Terminal\"'
+		"\       . ' to keystroke \"t\" using command down'
+		"\       . ' -e "tell application \"Terminal\"'
+		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
+		"exec cmd
+	else
+		let cwd = getcwd()
+		cd! %:h
+		shell
+		exec 'cd! "'. cwd. '"'
+	endif
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -2109,6 +2124,7 @@ let HIGHLIGHT.syntax["KeywordVirtual"]   = ["black", "virtual",   "none"]
 let HIGHLIGHT.syntax["KeywordOverride"]  = ["black", "override",  "none"]
 let HIGHLIGHT.syntax["KeywordStatic"]    = ["black", "static",    "none"]
 let HIGHLIGHT.syntax["KeywordPartial"]   = ["black", "partial",   "none"]
+let HIGHLIGHT.syntax["KeywordAbstract"]  = ["black", "abstract",  "none"]
 
 " syntax-highlight scheme mapping
 let HIGHLIGHT.map = {}
@@ -2137,7 +2153,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "red" : "DarkRed",
   \ "magenta" : "Magenta",
   \ "public" : "DarkCyan", "protected" : "DarkCyan", "private" : "DarkCyan",
-  \ "virtual" : "DarkCyan", "override" : "DarkCyan",
+  \ "virtual" : "DarkCyan", "override" : "DarkCyan", "abstract" : "DarkCyan",
   \ "static" : "DarkCyan", "partial" : "DarkCyan",
   \ "status" : "LightGray",
   \ "cc1" : "DarkBlue", "cc2" : "DarkGray",
@@ -2160,7 +2176,7 @@ let HIGHLIGHT.colors.toybox = {
   \ "red" : "#ee2211",
   \ "magenta" : "#cc4400",
   \ "public" : "#22ddcc", "protected" : "#22ddcc", "private" : "#22ddcc",
-  \ "virtual" : "#22ddcc", "override" : "#22ddcc",
+  \ "virtual" : "#22ddcc", "override" : "#22ddcc", "abstract" : "#22ddcc",
   \ "static" : "#22ddcc", "partial" : "#22ddcc",
   \ "status" : "#8899aa",
   \ "cc1" : "#112133", "cc2" : "#314253",
@@ -2183,7 +2199,7 @@ let HIGHLIGHT.colors.horror = {
   \ "red" : "#cc4400",
   \ "magenta" : "#ccbb00",
   \ "public" : "#ff69b4", "protected" : "#8a2be2", "private" : "#dc143c",
-  \ "virtual" : "#eee8aa", "override" : "#bdb76b",
+  \ "virtual" : "#eee8aa", "override" : "#bdb76b", "abstract" : "#cdb76b",
   \ "static" : "#80c0ee", "partial" : "#90ee90",
   \ "status" : "#8899aa",
   \ "cc1" : "#1c1f22", "cc2" : "#98e8b8",
