@@ -2126,6 +2126,8 @@ let HIGHLIGHT.syntax["SvnGutterAdd"]          = ["green", "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterChange"]       = ["blue",  "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterDelete"]       = ["red",   "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterChangeDelete"] = ["red",   "linebg", "none"]
+" VimFiler
+let HIGHLIGHT.syntax["VimFilerGray"] = ["cc2", "none", "none"]
 " keywords
 let HIGHLIGHT.syntax["KeywordPublic"]    = ["black", "public",    "none"]
 let HIGHLIGHT.syntax["KeywordProtected"] = ["black", "protected", "none"]
