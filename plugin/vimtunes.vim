@@ -2163,7 +2163,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "blue" : "DarkBlue",
   \ "yellow" : "DarkYellow", "special" : "DarkYellow",
   \ "red" : "DarkRed",
-  \ "gray" : "DrakGray",
+  \ "gray" : "DarkGray",
   \ "magenta" : "Magenta",
   \ "public" : "DarkCyan", "protected" : "DarkCyan", "private" : "DarkCyan",
   \ "virtual" : "DarkCyan", "override" : "DarkCyan", "abstract" : "DarkCyan",
