@@ -2127,7 +2127,7 @@ let HIGHLIGHT.syntax["SvnGutterChange"]       = ["blue",  "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterDelete"]       = ["red",   "linebg", "none"]
 let HIGHLIGHT.syntax["SvnGutterChangeDelete"] = ["red",   "linebg", "none"]
 " VimFiler
-let HIGHLIGHT.syntax["VimFilerGray"] = ["cc2", "none", "none"]
+let HIGHLIGHT.syntax["VimFilerGray"] = ["gray", "none", "none"]
 " keywords
 let HIGHLIGHT.syntax["KeywordPublic"]    = ["black", "public",    "none"]
 let HIGHLIGHT.syntax["KeywordProtected"] = ["black", "protected", "none"]
@@ -2163,6 +2163,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "blue" : "DarkBlue",
   \ "yellow" : "DarkYellow", "special" : "DarkYellow",
   \ "red" : "DarkRed",
+  \ "gray" : "DrakGray",
   \ "magenta" : "Magenta",
   \ "public" : "DarkCyan", "protected" : "DarkCyan", "private" : "DarkCyan",
   \ "virtual" : "DarkCyan", "override" : "DarkCyan", "abstract" : "DarkCyan",
@@ -2186,6 +2187,7 @@ let HIGHLIGHT.colors.toybox = {
   \ "blue" : "#3344aa",
   \ "yellow" : "#ddee22", "special" : "#e4dc22",
   \ "red" : "#ee2211",
+  \ "gray" : "#aabbaa",
   \ "magenta" : "#cc4400",
   \ "public" : "#22ddcc", "protected" : "#22ddcc", "private" : "#22ddcc",
   \ "virtual" : "#22ddcc", "override" : "#22ddcc", "abstract" : "#22ddcc",
@@ -2209,6 +2211,7 @@ let HIGHLIGHT.colors.horror = {
   \ "blue" : "#223377",
   \ "yellow" : "#ddcc88", "special" : "#ddcc88",
   \ "red" : "#cc4400",
+  \ "gray" : "#54a484",
   \ "magenta" : "#ccbb00",
   \ "public" : "#ff69b4", "protected" : "#8a2be2", "private" : "#dc143c",
   \ "virtual" : "#eee8aa", "override" : "#bdb76b", "abstract" : "#cdb76b",
