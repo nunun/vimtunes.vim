@@ -1641,18 +1641,12 @@ endfunction
 " vimshell
 "-----------------------------------------------------------------------------
 function! vimtunes.vimshell(...) dict
-	nmap 1sh :call vimtunes.VimShellCommand()<cr>
+	nmap 1sh :call vimtunes.ShellCommand()<cr>
+	nmap 2sh :call vimtunes.VimShellCommand()<cr>
+	let g:vimshell_split_command="rightbelow split | resize 35"
 endfunction
 
-function! vimtunes.VimShellCommand(...) dict
-	if exists(':VimShell') == 2
-		VimShell
-	else
-		call self.VimShellBuiltinCommand()
-	endif
-endfunction
-
-function! vimtunes.VimShellBuiltinCommand(...) dict
+function! vimtunes.ShellCommand(...) dict
 	if has('mac') && has('gui')
 		let bwd = expand('%:p:h')
 		exec '!open -a Terminal.app '. bwd
@@ -1661,6 +1655,14 @@ function! vimtunes.VimShellBuiltinCommand(...) dict
 		cd! %:h
 		shell
 		exec 'cd! "'. cwd. '"'
+	endif
+endfunction
+
+function! vimtunes.VimShellCommand(...) dict
+	if exists(':VimShell') == 2
+		VimShellBufferDir -toggle -split
+	else
+		call self.ShellCommand()
 	endif
 endfunction
 
