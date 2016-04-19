@@ -56,7 +56,7 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["vimfind"]	= (1)
-let use2["vimshellbi"]	= (1)
+let use2["vimshell"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -1638,29 +1638,24 @@ function! vimtunes.VimFindCommand(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" vimshellbi
+" vimshell
 "-----------------------------------------------------------------------------
-function! vimtunes.vimshellbi(...) dict
-	" keymaps
-	nmap 1sh :VimShellBuiltIn<cr>
-
-	" VimShell BuiltIn
-	command! -nargs=* -complete=file VimShellBuiltIn
-	    \ :call vimtunes.VimShellBuiltInCommand(<f-args>)
+function! vimtunes.vimshell(...) dict
+	nmap 1sh :call vimtunes.VimShellCommand()<cr>
 endfunction
 
-function! vimtunes.VimShellBuiltInCommand(...) dict
+function! vimtunes.VimShellCommand(...) dict
+	if exists(':VimShell') == 2
+		VimShell
+	else
+		call self.VimShellBuiltinCommand()
+	endif
+endfunction
+
+function! vimtunes.VimShellBuiltinCommand(...) dict
 	if has('mac') && has('gui')
 		let bwd = expand('%:p:h')
 		exec '!open -a Terminal.app '. bwd
-		"let cmd = '!osascript'
-		"\       . ' -e "tell application \"Terminal\" to activate"'
-		"\       . ' -e "tell application \"System Events\"'
-		"\       . ' to tell process \"Terminal\"'
-		"\       . ' to keystroke \"t\" using command down'
-		"\       . ' -e "tell application \"Terminal\"'
-		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
-		"exec cmd
 	else
 		let cwd = getcwd()
 		cd! %:h
@@ -2660,4 +2655,12 @@ unlet s:save_cpo
 	"map          so <Esc>:o<Space>
 	"map          sr <Esc>:r<Space>
 	"map          sq <Esc>:q<CR>
+"		"let cmd = '!osascript'
+		"\       . ' -e "tell application \"Terminal\" to activate"'
+		"\       . ' -e "tell application \"System Events\"'
+		"\       . ' to tell process \"Terminal\"'
+		"\       . ' to keystroke \"t\" using command down'
+		"\       . ' -e "tell application \"Terminal\"'
+		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
+		"exec cmd
 "}}}
