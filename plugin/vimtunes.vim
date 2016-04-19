@@ -56,7 +56,7 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["vimfind"]	= (1)
-let use2["vimshell"]	= (1)
+let use2["shell"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -1638,15 +1638,18 @@ function! vimtunes.VimFindCommand(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" vimshell
+" shell
 "-----------------------------------------------------------------------------
-function! vimtunes.vimshell(...) dict
-	nmap 1sh :call vimtunes.ShellCommand()<cr>
-	nmap 2sh :call vimtunes.VimShellCommand()<cr>
-	let g:vimshell_split_command="rightbelow split | resize 35"
+function! vimtunes.shell(...) dict
+	nmap 1sh :OpenShell<cr>
+	command! -nargs=* -complete=file OpenShell
+	\ :call vimtunes.OpenShellCommand(<f-args>)
+	command! -nargs=* -complete=file OpenVimShell
+	\ :call vimtunes.OpenVimShellCommand(<f-args>)
+	let g:vimshell_split_command="rightbelow split | resize 25"
 endfunction
 
-function! vimtunes.ShellCommand(...) dict
+function! vimtunes.OpenShellCommand(...) dict
 	if has('mac') && has('gui')
 		let bwd = expand('%:p:h')
 		exec '!open -a Terminal.app '. bwd
@@ -1658,11 +1661,11 @@ function! vimtunes.ShellCommand(...) dict
 	endif
 endfunction
 
-function! vimtunes.VimShellCommand(...) dict
+function! vimtunes.OpenVimShellCommand(...) dict
 	if exists(':VimShell') == 2
 		VimShellBufferDir -toggle -split
 	else
-		call self.ShellCommand()
+		call self.OpenShellCommand()
 	endif
 endfunction
 
