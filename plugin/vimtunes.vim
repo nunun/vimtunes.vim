@@ -21,11 +21,13 @@ let use0 = {} "priority 0 (hi)
 let use1 = {} "priority 1
 let use2 = {} "priority 2 (low)
 
+" version
+let use0["version"]	= (1)
 " setup
-let use0["vim"]		= (1)
-let use0["gvim"]	= (1) && has("gui_running")
-let use0["macvim"]	= (1) && has("gui_macvim")
-let use0["globalvars"]	= (1)
+let use1["vim"]		= (1)
+let use1["gvim"]	= (1) && has("gui_running")
+let use1["macvim"]	= (1) && has("gui_macvim")
+let use1["globalvars"]	= (1)
 " editor keymaps and control
 let use2["shortcut"]	= (1) && has("windows") "[sn][sN][sh][sj][sk][sl]
 let use2["inputmap"]	= (1)
@@ -54,7 +56,7 @@ let use2["wordmove"]	= (1)
 let use2["paramove"]	= (1) "[{][}]
 let use2["vimgrep"]	= (1)
 let use2["vimfind"]	= (1)
-let use2["vimshellbi"]	= (1)
+let use2["shell"]	= (1)
 let use2["Cfile"]	= (1)
 " indicators
 let use2["statusline"]	= (1) && has("statusline")
@@ -79,6 +81,15 @@ function! vimtunes.tune(...) dict
 			exec "call self.". i. "(self[a:1][i])"
 		endif
 	endfor
+endfunction
+
+"-----------------------------------------------------------------------------
+" vim version
+"-----------------------------------------------------------------------------
+function! vimtunes.version(...) dict
+	" Workarounds
+	let s:wa_hi_no_normal = has("patch-7.4-1721")
+	let s:wa_hi_delayed   = has("patch-7.4-1721") || has('gui_macvim')
 endfunction
 
 "-----------------------------------------------------------------------------
@@ -145,15 +156,19 @@ function! vimtunes.gvim(...) dict
 		set printfont=*-lucidatypewriter-medium-r-normal
 		    \-*-*-180-*-*-m-*-*
 	elseif has("gui_win32")
-		try
-			set guifont=Consolas:h18:cSHIFTJIS
-			set guifontwide=Consolas:h18:cSHIFTJIS
-			set printfont=Consolas:h18:cSHIFTJIS
-		catch
-			set guifont=ms_gothic:h16:cSHIFTJIS
-			set guifontwide=ms_gothic:h16:cSHIFTJIS
-			set printfont=ms_gothic:h16:cSHIFTJIS
-		endtry
+		if exists("g:hdpi")
+			" TODO
+		else
+			"try
+			"	set guifont=Consolas:h18:cSHIFTJIS
+			"	set guifontwide=Consolas:h18:cSHIFTJIS
+			"	set printfont=Consolas:h18:cSHIFTJIS
+			"catch
+			"	set guifont=ms_gothic:h16:cSHIFTJIS
+			"	set guifontwide=ms_gothic:h16:cSHIFTJIS
+			"	set printfont=ms_gothic:h16:cSHIFTJIS
+			"endtry
+		endif
 	elseif has("gui_macvim")
 		set guifont=Menlo:h24
 		set guifontwide=Menlo:h24
@@ -1006,8 +1021,7 @@ function! vimtunes.highlight(...) dict
 		let self.highlighter = g:HIGHLIGHT_CTERM.new()
 		let g:hi_color = "toybox16"
 	endif
-	if has("gui_macvim")
-		" XXX macvim workaround!!
+	if s:wa_hi_delayed
 		autocmd VimEnter
 		   \ *
 		   \ :call vimtunes.highlighter.hi(g:hi_color)
@@ -1625,34 +1639,34 @@ function! vimtunes.VimFindCommand(...) dict
 endfunction
 
 "-----------------------------------------------------------------------------
-" vimshellbi
+" shell
 "-----------------------------------------------------------------------------
-function! vimtunes.vimshellbi(...) dict
-	" keymaps
-	nmap 1sh :VimShellBuiltIn<cr>
-
-	" VimShell BuiltIn
-	command! -nargs=* -complete=file VimShellBuiltIn
-	    \ :call vimtunes.VimShellBuiltInCommand(<f-args>)
+function! vimtunes.shell(...) dict
+	nmap 1sh :OpenShell<cr>
+	command! -nargs=* -complete=file OpenShell
+	\ :call vimtunes.OpenShellCommand(<f-args>)
+	command! -nargs=* -complete=file OpenVimShell
+	\ :call vimtunes.OpenVimShellCommand(<f-args>)
+	let g:vimshell_split_command="rightbelow split | resize 25"
 endfunction
 
-function! vimtunes.VimShellBuiltInCommand(...) dict
+function! vimtunes.OpenShellCommand(...) dict
 	if has('mac') && has('gui')
 		let bwd = expand('%:p:h')
 		exec '!open -a Terminal.app '. bwd
-		"let cmd = '!osascript'
-		"\       . ' -e "tell application \"Terminal\" to activate"'
-		"\       . ' -e "tell application \"System Events\"'
-		"\       . ' to tell process \"Terminal\"'
-		"\       . ' to keystroke \"t\" using command down'
-		"\       . ' -e "tell application \"Terminal\"'
-		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
-		"exec cmd
 	else
 		let cwd = getcwd()
 		cd! %:h
 		shell
 		exec 'cd! "'. cwd. '"'
+	endif
+endfunction
+
+function! vimtunes.OpenVimShellCommand(...) dict
+	if exists(':VimShell') == 2
+		VimShellBufferDir -toggle -split
+	else
+		call self.OpenShellCommand()
 	endif
 endfunction
 
@@ -2258,9 +2272,11 @@ function! HIGHLIGHT_hi(...) dict
 	let colorname = a:1
 	let self.color = self.colors[colorname]
 	let syntax = self.syntax
-	if exists("syntax['Normal']")
-		call self.hi_syntax("Normal", syntax["Normal"])
-		unlet syntax["Normal"]
+	if !s:wa_hi_no_normal
+		if exists("syntax['Normal']")
+			call self.hi_syntax("Normal", syntax["Normal"])
+			unlet syntax["Normal"]
+		endif
 	endif
 	for i in keys(syntax)
 		call self.hi_syntax(i, syntax[i])
@@ -2308,6 +2324,7 @@ call vimtunes.tune("use2", use2)
 let g:loaded_vimtunes = 1
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
 "{{{ BACKUP
 "let use9 = {} "priority 9 (low)
 "call vimtunes.tune("use9", use9)
@@ -2645,4 +2662,12 @@ unlet s:save_cpo
 	"map          so <Esc>:o<Space>
 	"map          sr <Esc>:r<Space>
 	"map          sq <Esc>:q<CR>
+"		"let cmd = '!osascript'
+		"\       . ' -e "tell application \"Terminal\" to activate"'
+		"\       . ' -e "tell application \"System Events\"'
+		"\       . ' to tell process \"Terminal\"'
+		"\       . ' to keystroke \"t\" using command down'
+		"\       . ' -e "tell application \"Terminal\"'
+		"\       . ' to do script \"cd \\\"'. bwd. '\\\"\""'
+		"exec cmd
 "}}}
