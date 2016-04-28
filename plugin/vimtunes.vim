@@ -569,6 +569,7 @@ function! vimtunes.setup_object_oriented_keywords()
 	syntax keyword KeywordPublic    public
 	syntax keyword KeywordProtected protected
 	syntax keyword KeywordPrivate   private
+	syntax keyword KeywordConst     const
 	syntax keyword KeywordStatic    static
 	syntax keyword KeywordPartial   partial
 	syntax keyword KeywordVirtual   virtual
@@ -2134,6 +2135,7 @@ let HIGHLIGHT.syntax["KeywordProtected"] = ["black", "protected", "none"]
 let HIGHLIGHT.syntax["KeywordPrivate"]   = ["black", "private",   "none"]
 let HIGHLIGHT.syntax["KeywordVirtual"]   = ["black", "virtual",   "none"]
 let HIGHLIGHT.syntax["KeywordOverride"]  = ["black", "override",  "none"]
+let HIGHLIGHT.syntax["KeywordConst"]     = ["black", "const",     "none"]
 let HIGHLIGHT.syntax["KeywordStatic"]    = ["black", "static",    "none"]
 let HIGHLIGHT.syntax["KeywordPartial"]   = ["black", "partial",   "none"]
 let HIGHLIGHT.syntax["KeywordAbstract"]  = ["black", "abstract",  "none"]
@@ -2167,7 +2169,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "magenta" : "Magenta",
   \ "public" : "DarkCyan", "protected" : "DarkCyan", "private" : "DarkCyan",
   \ "virtual" : "DarkCyan", "override" : "DarkCyan", "abstract" : "DarkCyan",
-  \ "static" : "DarkCyan", "partial" : "DarkCyan",
+  \ "const": "DarkCyan", "static" : "DarkCyan", "partial" : "DarkCyan",
   \ "status" : "LightGray",
   \ "cc1" : "DarkBlue", "cc2" : "DarkGray",
   \ "tab" : "LightGray",
@@ -2191,7 +2193,7 @@ let HIGHLIGHT.colors.toybox = {
   \ "magenta" : "#cc4400",
   \ "public" : "#22ddcc", "protected" : "#22ddcc", "private" : "#22ddcc",
   \ "virtual" : "#22ddcc", "override" : "#22ddcc", "abstract" : "#22ddcc",
-  \ "static" : "#22ddcc", "partial" : "#22ddcc",
+  \ "const": "#32eddc", "static" : "#22ddcc", "partial" : "#22ddcc",
   \ "status" : "#8899aa",
   \ "cc1" : "#112133", "cc2" : "#314253",
   \ "tab" : "#556677",
@@ -2215,7 +2217,7 @@ let HIGHLIGHT.colors.horror = {
   \ "magenta" : "#ccbb00",
   \ "public" : "#ff69b4", "protected" : "#8a2be2", "private" : "#dc143c",
   \ "virtual" : "#eee8aa", "override" : "#bdb76b", "abstract" : "#cdb76b",
-  \ "static" : "#80c0ee", "partial" : "#90ee90",
+  \ "const" : "#88c8f5", "static" : "#80c0ee", "partial" : "#90ee90",
   \ "status" : "#8899aa",
   \ "cc1" : "#1c1f22", "cc2" : "#98e8b8",
   \ "tab" : "#556677",
