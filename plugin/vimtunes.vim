@@ -2231,7 +2231,7 @@ let HIGHLIGHT.colors.horror = {
   \ "magenta" : "#ccbb00",
   \ "public" : "#ff69b4", "protected" : "#8a2be2", "private" : "#dc143c",
   \ "virtual" : "#eee8aa", "override" : "#bdb76b", "abstract" : "#cdb76b",
-  \ "const" : "#88c8f5", "static" : "#80c0ee", "partial" : "#90ee90",
+  \ "const" : "#a0e0ee", "static" : "#80c0ee", "partial" : "#90ee90",
   \ "status" : "#8899aa",
   \ "cc1" : "#1c1f22", "cc2" : "#98e8b8",
   \ "tab" : "#556677",
