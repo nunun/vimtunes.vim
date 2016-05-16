@@ -2192,7 +2192,7 @@ let HIGHLIGHT.colors.toybox16 = {
   \ "visualfg" : "", "visualbg" : "", "visual" : "reverse",
   \ "underline" : "underline", "underline2" : "underline",
   \ "bold" : "bold",
-  \ "fg" : "fg", "bg" : "bg", "none" : "NONE",
+  \ "fg" : "fg", "bg" : "NONE", "none" : "NONE",
   \ }
 let HIGHLIGHT.colors.toybox = {
   \ "fore" : "#eeffee",
