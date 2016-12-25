@@ -770,39 +770,41 @@ endfunction
 " filetype
 "-----------------------------------------------------------------------------
 function! vimtunes.filetype(...) dict
-	autocmd FileType *        :call vimtunes.filetype_all()  " All
+	autocmd FileType *          :call vimtunes.filetype_all()  " All
 
-	autocmd FileType vim      :call vimtunes.filetype_vim()  " vim
-	autocmd FileType sh       :call vimtunes.filetype_sh()   " sh
-	autocmd FileType txt      :call vimtunes.filetype_txt()  " txt
+	autocmd FileType vim        :call vimtunes.filetype_vim()  " vim
+	autocmd FileType sh         :call vimtunes.filetype_sh()   " sh
+	autocmd FileType txt        :call vimtunes.filetype_txt()  " txt
 
-	autocmd FileType c        :call vimtunes.filetype_c()    " C
-	autocmd FileType cpp      :call vimtunes.filetype_cpp()  " C++
-	autocmd FileType cs       :call vimtunes.filetype_cs()   " C#
-	autocmd FileType go       :call vimtunes.filetype_go()   " GO
-	autocmd FileType m        :call vimtunes.filetype_objc() " Objective-C (C)
-	autocmd FileType mm       :call vimtunes.filetype_objc() " Objective-C (C++)
-	autocmd FileType java     :call vimtunes.filetype_java() " Java
+	autocmd FileType c          :call vimtunes.filetype_c()    " C
+	autocmd FileType cpp        :call vimtunes.filetype_cpp()  " C++
+	autocmd FileType cs         :call vimtunes.filetype_cs()   " C#
+	autocmd FileType go         :call vimtunes.filetype_go()   " GO
+	autocmd FileType m          :call vimtunes.filetype_objc() " Objective-C (C)
+	autocmd FileType mm         :call vimtunes.filetype_objc() " Objective-C (C++)
+	autocmd FileType java       :call vimtunes.filetype_java() " Java
 
-	autocmd FileType rb       :call vimtunes.filetype_rb()   " Ruby
-	autocmd FileType rake     :call vimtunes.filetype_rake() " Rakefile (.rake)
-	autocmd FileType erb      :call vimtunes.filetype_html() " eRuby
-	autocmd FileType yaml     :call vimtunes.filetype_yaml() " Yaml
-	autocmd FileType py       :call vimtunes.filetype_py()   " Python
+	autocmd FileType rb         :call vimtunes.filetype_rb()   " Ruby
+	autocmd FileType ruby       :call vimtunes.filetype_rb()   " Ruby
+	autocmd FileType rake       :call vimtunes.filetype_rake() " Rakefile (.rake)
+	autocmd FileType erb        :call vimtunes.filetype_html() " eRuby
+	autocmd FileType yaml       :call vimtunes.filetype_yaml() " Yaml
+	autocmd FileType py         :call vimtunes.filetype_py()   " Python
 
-	autocmd FileType php      :call vimtunes.filetype_php()  " PHP
-	autocmd FileType sql      :call vimtunes.filetype_sql()  " SQL
-	autocmd FileType xml      :call vimtunes.filetype_xml()  " XML
-	autocmd FileType html     :call vimtunes.filetype_html() " HTML
-	autocmd FileType xhtml    :call vimtunes.filetype_html() " XHTML
+	autocmd FileType php        :call vimtunes.filetype_php()  " PHP
+	autocmd FileType sql        :call vimtunes.filetype_sql()  " SQL
+	autocmd FileType xml        :call vimtunes.filetype_xml()  " XML
+	autocmd FileType html       :call vimtunes.filetype_html() " HTML
+	autocmd FileType xhtml      :call vimtunes.filetype_html() " XHTML
 
-	autocmd FileType js       :call vimtunes.filetype_js()   " JavaScript
-	autocmd FileType json     :call vimtunes.filetype_json() " JSON
-	autocmd FileType jake     :call vimtunes.filetype_jake() " Jakefile
-	autocmd FileType ejs      :call vimtunes.filetype_html() " eJS
-	autocmd FileType jade     :call vimtunes.filetype_jade() " Jade
-	autocmd FileType css      :call vimtunes.filetype_css()  " CSS
-	autocmd FileType styl     :call vimtunes.filetype_styl() " Stylus
+	autocmd FileType js         :call vimtunes.filetype_js()   " JavaScript
+	autocmd FileType javascript :call vimtunes.filetype_js()   " JavaScript
+	autocmd FileType json       :call vimtunes.filetype_json() " JSON
+	autocmd FileType jake       :call vimtunes.filetype_jake() " Jakefile
+	autocmd FileType ejs        :call vimtunes.filetype_html() " eJS
+	autocmd FileType jade       :call vimtunes.filetype_jade() " Jade
+	autocmd FileType css        :call vimtunes.filetype_css()  " CSS
+	autocmd FileType styl       :call vimtunes.filetype_styl() " Stylus
 endfunction
 
 function! vimtunes.filetype_all(...) dict
