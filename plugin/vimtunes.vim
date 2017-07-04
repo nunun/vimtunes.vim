@@ -122,7 +122,6 @@ function! vimtunes.vim(...) dict
 	set incsearch
 	set noswapfile
 	set spelllang=
-	set timeoutlen=300
 	if has('win32') "win32/win64
 		set noundofile
 	elseif has('persistent_undo')
